@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cabelos com Amor — Haskell Atelier</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    .font-serif { font-family: 'Playfair Display', serif !important; }
+    body { font-family: 'Inter', sans-serif; background: #F9F6F2; color: #2C2C2C; overflow-x: hidden; }
+    .text-bronze { color: #C59881 !important; }
+    .bg-bronze { background-color: #C59881 !important; }
+    .border-bronze { border-color: #C59881 !important; }
+    .bg-sage { background-color: #4A634D !important; }
+    .text-sage { color: #4A634D !important; }
+    .venus-frame { border-radius: 500px 500px 20px 20px; aspect-ratio: 4 / 5.5; }
+    .btn-premium { background: #C59881; color: white; transition: all 0.4s ease; }
+    .btn-premium:hover { background: #b1846f; transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(197,152,129,0.4); }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #F9F6F2; }
+    ::-webkit-scrollbar-thumb { background: #C59881; border-radius: 10px; }
+    html { scroll-behavior: smooth; }
+    @keyframes fallSway {
+      0%   { transform: translateY(-60px) rotate(0deg) translateX(0); opacity: 0; }
+      10%  { opacity: 0.4; }
+      25%  { transform: translateY(25vh) rotate(45deg) translateX(30px); }
+      50%  { transform: translateY(55vh) rotate(180deg) translateX(-30px); }
+      75%  { transform: translateY(80vh) rotate(225deg) translateX(25px); }
+      100% { transform: translateY(115vh) rotate(360deg) translateX(0); opacity: 0; }
+    }
+    .petal { position: fixed; pointer-events: none; z-index: 9999; animation-name: fallSway; animation-timing-function: ease-in-out; animation-iteration-count: infinite; border-radius: 0 85% 0 85%; opacity: 0.3; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: spin 1s linear infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+    .bar-anim { animation: pulse 0.8s ease-in-out infinite; }
+    .hero-bg {
+      background: linear-gradient(135deg, #F2EDE7 0%, #EAE0D8 30%, #DDD0C4 60%, #C59881 100%);
+      position: relative;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C59881' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-visual {
+      background: linear-gradient(160deg, #C59881 0%, #D4A896 25%, #E8C5B0 50%, #4A634D 80%, #2C3E30 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .input-field { width: 100%; border: none; border-bottom: 1px solid #e5e7eb; padding: 12px 0; font-size: 1.125rem; background: transparent; outline: none; color: #2C2C2C; font-family: 'Inter', sans-serif; }
+    .input-field:focus { border-bottom-color: #C59881; }
+    select.input-field { cursor: pointer; appearance: none; color: #6b7280; }
+    .nav-link { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700; text-decoration: none; color: #2C2C2C; transition: color 0.2s; }
+    .nav-link:hover { color: #C59881; }
+    label.field-label { display: block; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 800; color: #9ca3af; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+// ============ TRANSLATIONS ============
+const T = {
+  pt: {
+    nav: { legacy:"O Legado", spa:"Hair Spa", kits:"Kits Mistério", diag:"Diagnóstico" },
+    music: { btn:"Soundscape", title:"Playlist Atelier", t1:"Frequência Vênus (432Hz)", t2:"Ondas de Relaxamento", t3:"Ritual Botânico" },
+    hero: { tag:"Manifesto de Autonomia Capilar", t1:"Cabelo Vênus:", t2:"A Moldura da Alma.", desc:"Na Cabelos com Amor, celebramos a beleza capilar em sua perfeição técnica e natural. Transforme o seu ritual diário numa experiência de alta performance com a nossa consultoria.", btn:"Iniciar Consultoria" },
+    legacy: { tag:"Conhecimento que Transcende", quote:'"A história do cuidado não está nos rótulos, mas no toque consciente de quem domina a própria estética."', p1:"Cuidar do seu cabelo é um exercício de soberania técnica. No nosso Atelier, validamos essa magia ancestral com a precisão da ciência botânica moderna. Através da análise de porosidade e percepção tátil, consultamos protocolos que respeitam a sua biologia única.", bq:'"A Gestalt do Cuidado: Onde a autonomia tátil encontra a excelência Haskell para revelar a sua versão mais autêntica."' },
+    spa: { t1:"O Seu", t2:"Hair Spa", t3:"Particular", tag:"Consultoria em Fórmulas Nobres", c1t:"Coleção Cavalo Forte", c1tag:"Crescimento & Vigor", c1d:"Através dos ativos Biotina, Pantenol e Queratina, esta coleção age diretamente na estrutura do fio, promovendo força, reconstrução e hidratação intensa.", c2t:"Sinfonia de Óleos", c2tag:"Nutrição Lipídica", c2d:"Estruturação de cachos com Manteiga de Murumuru e Seiva Nutritiva. Óleos de Marula, Argan e Monoi garantem hidratação, brilho e restauração da fibra com proteção antioxidante.", c3t:"Loiras de Luxo", c3tag:"Matização Técnica", c3d:"A combinação sinérgica do Complexo de Proteínas com o Vinagre Balsâmico cria um tratamento de dupla ação: enquanto as proteínas reconstroem o fio, o vinagre reequilibra o pH e sela as cutículas." },
+    mystery: { tag:"Atelier de Consultoria", t1:"O Mistério da", t2:"Caixa Consultoria.", desc:"Seleções personalizadas para o seu ritual capilar diário, baseadas no seu diagnóstico técnico.", box1:"Caixa Vênus", box1tag:"Experiência Essencial", box2:"Kit Atelier", box2tag:"Consultoria Técnica", rTitle:"Cada caixa é única", rDesc:"Nada aqui é aleatório: sua caixa pode incluir acessórios escolhidos especialmente para você.", items:["Scrunchies Seda","Touca de Cetim","Presilhas","Pentes Bambu","Massageador","Aplicador Óleo"] },
+    diag: { tag:"Manifesto de Autonomia", t1:"O Diagnóstico", t2:"Particular.", desc:"Não somos um marketplace; somos a sua bússola capilar. Deixe a Cabelos com Amor curar a sua próxima experiência sensorial em casa.", i1:"Análise", i2:"Histórico", i3:"Individual", formTitle:"Marcar Consultoria", l1:"Como deseja ser chamada?", p1:"Ex: Maria Vênus", l2:"WhatsApp para Consultoria", p2:"+351 000 000 000", l3:"Tipo de Cabelo", o3_0:"Selecione...", o3_1:"Liso", o3_2:"Ondulado", o3_3:"Cacheado", o3_4:"Crespo", l4:"Ritual de Interesse", o4_1:"Home Spa (Cachos & Óleos)", o4_2:"Home Spa (Crescimento & Força)", o4_3:"Home Spa (Matização Loiras)", o4_4:"Caixa Mistério Vênus", o4_5:"Outro Desafio Capilar", btn:"Solicitar meu Diagnóstico", s1:"Pedido Enviado", s2:"Entraremos em contacto via WhatsApp em breve para a sua consultoria.", s3:"Novo pedido" },
+    footer: { vegan:"100% Vegano", cruelty:"Cruelty Free", sub:"Especialistas em Diagnósticos Capilares Personalizados" }
+  },
+  en: {
+    nav: { legacy:"The Legacy", spa:"Hair Spa", kits:"Mystery Kits", diag:"Diagnosis" },
+    music: { btn:"Soundscape", title:"Atelier Playlist", t1:"Venus Frequency (432Hz)", t2:"Relaxation Waves", t3:"Botanical Ritual" },
+    hero: { tag:"Hair Autonomy Manifesto", t1:"Venus Hair:", t2:"The Frame of the Soul.", desc:"At Cabelos com Amor, we celebrate hair beauty in its technical and natural perfection. Transform your daily ritual into a high-performance experience with our consultation.", btn:"Start Consultation" },
+    legacy: { tag:"Transcending Knowledge", quote:'"The history of care is not in the labels, but in the conscious touch of those who master their own aesthetics."', p1:"Caring for your hair is an exercise in technical sovereignty. In our Atelier, we validate this ancestral magic with the precision of modern botanical science. Through porosity analysis and tactile perception, we consult on protocols that respect your unique biology.", bq:'"The Gestalt of Care: Where tactile autonomy meets Haskell excellence to reveal your most authentic self."' },
+    spa: { t1:"Your Private", t2:"Hair Spa", t3:"", tag:"Noble Formulas Consultation", c1t:"Strong Horse Collection", c1tag:"Growth & Vigor", c1d:"Through Biotin, Panthenol, and Keratin, this collection acts directly on the hair structure, promoting strength, reconstruction, and intense hydration.", c2t:"Symphony of Oils", c2tag:"Lipid Nutrition", c2d:"Curl structuring with Murumuru Butter and Nutritive Sap. Marula, Argan, and Monoi oils guarantee hydration, shine, and fiber restoration with antioxidant protection.", c3t:"Luxury Blondes", c3tag:"Technical Matting", c3d:"The synergistic combination of Protein Complex and Balsamic Vinegar creates a dual-action treatment: proteins rebuild the hair's internal mass while vinegar rebalances pH and seals the cuticles." },
+    mystery: { tag:"Consultation Atelier", t1:"The Mystery of the", t2:"Consultation Box.", desc:"Personalized selections for your daily hair ritual, based on your technical diagnosis.", box1:"Venus Box", box1tag:"Essential Experience", box2:"Atelier Kit", box2tag:"Technical Consultation", rTitle:"Every box is unique", rDesc:"Nothing here is random: your box may include accessories chosen especially for you.", items:["Silk Scrunchies","Satin Bonnet","Hair Clips","Bamboo Combs","Scalp Massager","Oil Applicator"] },
+    diag: { tag:"Autonomy Manifesto", t1:"The Private", t2:"Diagnosis.", desc:"We are not a marketplace; we are your hair compass. Let Cabelos com Amor curate your next sensory experience at home.", i1:"Analysis", i2:"History", i3:"Individual", formTitle:"Book Consultation", l1:"How would you like to be called?", p1:"Ex: Maria Venus", l2:"WhatsApp for Consultation", p2:"+1 000 000 0000", l3:"Hair Type", o3_0:"Select...", o3_1:"Straight", o3_2:"Wavy", o3_3:"Curly", o3_4:"Coily", l4:"Ritual of Interest", o4_1:"Home Spa (Curls & Oils)", o4_2:"Home Spa (Growth & Strength)", o4_3:"Home Spa (Blonde Matting)", o4_4:"Venus Mystery Box", o4_5:"Other Hair Challenge", btn:"Request my Diagnosis", s1:"Request Sent", s2:"We will contact you via WhatsApp shortly for your consultation.", s3:"New request" },
+    footer: { vegan:"100% Vegan", cruelty:"Cruelty Free", sub:"Specialists in Personalized Hair Diagnoses" }
+  },
+  es: {
+    nav: { legacy:"El Legado", spa:"Hair Spa", kits:"Kits Misterio", diag:"Diagnóstico" },
+    music: { btn:"Soundscape", title:"Playlist Atelier", t1:"Frecuencia Venus (432Hz)", t2:"Ondas de Relajación", t3:"Ritual Botánico" },
+    hero: { tag:"Manifiesto de Autonomía Capilar", t1:"Cabello Venus:", t2:"El Marco del Alma.", desc:"En Cabelos com Amor, celebramos la belleza capilar en su perfección técnica y natural. Transforma tu ritual diario en una experiencia de alto rendimiento con nuestra consultoría.", btn:"Iniciar Consultoría" },
+    legacy: { tag:"Conocimiento que Trasciende", quote:'"La historia del cuidado no está en las etiquetas, sino en el toque consciente de quien domina su propia estética."', p1:"Cuidar de tu cabello es un ejercicio de soberanía técnica. En nuestro Atelier, validamos esta magia ancestral con la precisión de la ciencia botánica moderna. A través del análisis de porosidad y percepción táctil, consultamos protocolos que respetan tu biología única.", bq:'"La Gestalt del Cuidado: Donde la autonomía táctil se encuentra con la excelencia Haskell para revelar tu versión más auténtica."' },
+    spa: { t1:"Tu", t2:"Hair Spa", t3:"Particular", tag:"Consultoría en Fórmulas Nobles", c1t:"Colección Caballo Fuerte", c1tag:"Crecimiento & Vigor", c1d:"A través de los activos Biotina, Pantenol y Queratina, esta colección actúa directamente en la estructura del cabello, promoviendo fuerza, reconstrucción e hidratación intensa.", c2t:"Sinfonía de Aceites", c2tag:"Nutrición Lipídica", c2d:"Estructuración de rizos con Manteca de Murumuru y Savia Nutritiva. Los aceites de Marula, Argán y Monoi garantizan hidratación, brillo y restauración de la fibra.", c3t:"Rubias de Lujo", c3tag:"Matización Técnica", c3d:"La combinación sinérgica del Complejo de Proteínas con el Vinagre Balsámico crea un tratamiento de doble acción: las proteínas reconstruyen la masa interna y el vinagre reequilibra el pH." },
+    mystery: { tag:"Atelier de Consultoría", t1:"El Misterio de la", t2:"Caja Consultoría.", desc:"Selecciones personalizadas para tu ritual capilar diario, basadas en tu diagnóstico técnico.", box1:"Caja Venus", box1tag:"Experiencia Esencial", box2:"Kit Atelier", box2tag:"Consultoría Técnica", rTitle:"Cada caja es única", rDesc:"Nada aquí es aleatorio: tu caja puede incluir accesorios elegidos especialmente para ti.", items:["Scrunchies de Seda","Gorro de Satén","Pinzas","Peines de Bambú","Masajeador","Aplicador de Aceite"] },
+    diag: { tag:"Manifiesto de Autonomía", t1:"El Diagnóstico", t2:"Particular.", desc:"No somos un marketplace; somos tu brújula capilar. Deja que Cabelos com Amor cure tu próxima experiencia sensorial en casa.", i1:"Análisis", i2:"Historial", i3:"Individual", formTitle:"Reservar Consultoría", l1:"¿Cómo deseas ser llamada?", p1:"Ej: Maria Venus", l2:"WhatsApp para Consultoría", p2:"+34 000 000 000", l3:"Tipo de Cabello", o3_0:"Selecciona...", o3_1:"Liso", o3_2:"Ondulado", o3_3:"Rizado", o3_4:"Crespo", l4:"Ritual de Interés", o4_1:"Home Spa (Rizos & Aceites)", o4_2:"Home Spa (Crecimiento & Fuerza)", o4_3:"Home Spa (Matización Rubias)", o4_4:"Caja Misterio Venus", o4_5:"Otro Desafío Capilar", btn:"Solicitar mi Diagnóstico", s1:"Pedido Enviado", s2:"Nos pondremos en contacto vía WhatsApp en breve.", s3:"Nuevo pedido" },
+    footer: { vegan:"100% Vegano", cruelty:"Cruelty Free", sub:"Especialistas en Diagnósticos Capilares Personalizados" }
+  }
+};
+
+// ============ ICONS (inline SVG) ============
+const Icon = {
+  Menu: () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>,
+  X: () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+  ArrowRight: ({size=14}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>,
+  ChevronDown: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>,
+  Eye: ({size=40}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>,
+  Zap: ({size=40}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+  Droplets: ({size=40}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>,
+  Sparkle: ({size=40}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>,
+  Package: ({size=32}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>,
+  Stars: ({size=32}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>,
+  Flower: ({size=14}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2a3 3 0 0 0 0 6 3 3 0 0 0 0-6"/><path d="M12 16a3 3 0 0 0 0 6 3 3 0 0 0 0-6"/><path d="M2 12a3 3 0 0 0 6 0 3 3 0 0 0-6 0"/><path d="M16 12a3 3 0 0 0 6 0 3 3 0 0 0-6 0"/></svg>,
+  Pipette: ({size=14}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z"/></svg>,
+  Brain: ({size=44}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.44-4.14L9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.44-4.14L14.5 2Z"/></svg>,
+  History: ({size=44}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>,
+  User: ({size=44}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+  Check: ({size=48}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
+  Music: ({size=14}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>,
+  Play: ({size=14}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>,
+  Pause: ({size=14}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>,
+  Globe: ({size=16}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+  Leaf: ({size=20}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>,
+  Paw: ({size=20}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/></svg>,
+};
+
+// ============ LOGO ============
+const MainLogo = ({ size = 80, showText = true }) => (
+  <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'8px', width: size }}>
+    <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'auto'}}>
+      <g opacity="0.8">
+        <path d="M40 100C30 90 25 70 35 55M160 100C170 90 175 70 165 55" stroke="#4A634D" strokeWidth="1.5" strokeLinecap="round"/>
+        <path d="M45 110C35 120 30 140 40 145M155 110C165 120 170 140 160 145" stroke="#4A634D" strokeWidth="1.5" strokeLinecap="round"/>
+        <ellipse cx="32" cy="70" rx="3" ry="6" transform="rotate(-30 32 70)" fill="#4A634D"/>
+        <ellipse cx="168" cy="70" rx="3" ry="6" transform="rotate(30 168 70)" fill="#4A634D"/>
+      </g>
+      <g>
+        <path d="M100 140C80 140 40 110 40 70C40 45 60 30 80 30C90 30 100 40 100 50" stroke="#C59881" strokeWidth="6" strokeLinecap="round"/>
+        <path d="M48 65C55 60 65 65 70 75M55 85C62 80 72 85 77 95M65 105C72 100 82 105 87 115" stroke="#C59881" strokeWidth="1.5" opacity="0.6"/>
+        <path d="M100 140C120 140 160 110 160 70C160 45 140 30 120 30C110 30 100 40 100 50" stroke="#C59881" strokeWidth="6" strokeLinecap="round"/>
+        <path d="M92 135C92 135 100 155 100 155C100 155 108 135 108 135" stroke="#C59881" strokeWidth="4" strokeLinecap="round"/>
+        <rect x="94" y="132" width="12" height="4" rx="2" fill="#C59881"/>
+      </g>
+    </svg>
+    {showText && <span style={{color:'#C59881', fontFamily:"'Playfair Display',serif", fontStyle:'italic', fontSize:'1.125rem', lineHeight:1}}>Cabelos com Amor</span>}
+  </div>
+);
+
+// ============ PETALS ============
+const PetalsRain = () => {
+  const colors = ['#C59881','#EAE3DB','#4A634D','#F9F6F2'];
+  const petals = Array.from({length: 20}).map((_, i) => ({
+    id: i,
+    left: (Math.random() * 100) + '%',
+    delay: (Math.random() * 12) + 's',
+    duration: (10 + Math.random() * 8) + 's',
+    width: (10 + Math.random() * 14) + 'px',
+    height: (14 + Math.random() * 18) + 'px',
+    color: colors[Math.floor(Math.random() * colors.length)],
+  }));
+  return (
+    <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:9999,overflow:'hidden'}}>
+      {petals.map(p => (
+        <div key={p.id} className="petal" style={{
+          left: p.left, width: p.width, height: p.height,
+          backgroundColor: p.color,
+          animationDelay: p.delay, animationDuration: p.duration,
+          top: '-60px',
+        }}/>
+      ))}
+    </div>
+  );
+};
+
+// ============ APP ============
+const App = () => {
+  const [scrolled, setScrolled] = useState(false);
+  const [formStatus, setFormStatus] = useState('idle');
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [lang, setLang] = useState('pt');
+  const [showLang, setShowLang] = useState(false);
+  const [showPlaylist, setShowPlaylist] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
+  const t = T[lang];
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const togglePlay = () => {
+    if (isPlaying) { audioRef.current?.pause(); } 
+    else { audioRef.current?.play().catch(()=>{}); }
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setFormStatus('submitting');
+    setTimeout(() => setFormStatus('success'), 1500);
+  };
+
+  const navBg = scrolled || mobileOpen ? 'rgba(255,255,255,0.96)' : 'transparent';
+  const navPy = scrolled || mobileOpen ? '12px' : '24px';
+
+  return (
+    <div style={{minHeight:'100vh', background:'#F9F6F2', overflowX:'hidden'}}>
+      <PetalsRain />
+
+      {/* ======= NAV ======= */}
+      <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:1000,background:navBg,backdropFilter:'blur(12px)',padding:`${navPy} 0`,transition:'all 0.6s',boxShadow: scrolled ? '0 1px 20px rgba(0,0,0,0.05)' : 'none'}}>
+        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          
+          {/* Brand */}
+          <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
+            <MainLogo size={scrolled ? 56 : 68} showText={false}/>
+            <div>
+              <div style={{fontSize:'1.25rem',fontFamily:"'Playfair Display',serif",fontWeight:700,lineHeight:1,letterSpacing:'-0.02em'}}>Cabelos com Amor</div>
+              <div style={{fontSize:'9px',letterSpacing:'0.3em',textTransform:'uppercase',opacity:0.5,fontWeight:700,marginTop:'2px'}}>Haskell Atelier</div>
+            </div>
+          </div>
+
+          {/* Desktop Nav Links */}
+          <div style={{display:'flex',gap:'40px',alignItems:'center'}} className="hidden lg:flex">
+            {[['#legado',t.nav.legacy],['#hairspa',t.nav.spa],['#misterio',t.nav.kits]].map(([href,label])=>(
+              <a key={href} href={href} className="nav-link">{label}</a>
+            ))}
+            <a href="#diagnostico" style={{padding:'8px 20px',background:'rgba(74,99,77,0.06)',color:'#4A634D',borderRadius:'999px',border:'1px solid rgba(74,99,77,0.12)',fontSize:'10px',letterSpacing:'0.2em',textTransform:'uppercase',fontWeight:700,textDecoration:'none',transition:'all 0.2s'}}
+              onMouseOver={e=>{e.target.style.background='#4A634D';e.target.style.color='white';}}
+              onMouseOut={e=>{e.target.style.background='rgba(74,99,77,0.06)';e.target.style.color='#4A634D';}}
+            >{t.nav.diag}</a>
+          </div>
+
+          {/* Right Controls */}
+          <div style={{display:'flex',alignItems:'center',gap:'24px'}} className="hidden lg:flex">
+            {/* Music */}
+            <div style={{position:'relative'}}>
+              <button onClick={()=>setShowPlaylist(!showPlaylist)} style={{display:'flex',alignItems:'center',gap:'8px',border:'1px solid #C59881',color:'#C59881',padding:'8px 20px',fontSize:'10px',letterSpacing:'0.2em',textTransform:'uppercase',fontWeight:700,background:'transparent',cursor:'pointer',borderRadius:'2px',transition:'all 0.2s'}}
+                onMouseOver={e=>{e.currentTarget.style.background='#C59881';e.currentTarget.style.color='white';}}
+                onMouseOut={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.color='#C59881';}}>
+                <Icon.Music size={14}/> {t.music.btn}
+              </button>
+              {showPlaylist && (
+                <div style={{position:'absolute',top:'100%',right:0,marginTop:'12px',width:'280px',background:'rgba(255,255,255,0.97)',border:'1px solid rgba(197,152,129,0.2)',padding:'24px',borderRadius:'2px',boxShadow:'0 20px 60px rgba(0,0,0,0.1)',zIndex:200}}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}}>
+                    <span style={{fontSize:'10px',letterSpacing:'0.2em',textTransform:'uppercase',fontWeight:700,color:'#9ca3af'}}>{t.music.title}</span>
+                    <button onClick={togglePlay} style={{background:'rgba(197,152,129,0.1)',border:'none',borderRadius:'50%',width:'36px',height:'36px',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:'#C59881'}}>
+                      {isPlaying ? <Icon.Pause size={14}/> : <Icon.Play size={14}/>}
+                    </button>
+                  </div>
+                  <ul style={{listStyle:'none',display:'flex',flexDirection:'column',gap:'14px'}}>
+                    <li style={{fontSize:'12px',color:'#C59881',fontWeight:500,display:'flex',alignItems:'center',gap:'10px'}}>
+                      <div style={{display:'flex',alignItems:'flex-end',gap:'2px',height:'14px'}}>
+                        {[0,75,0].map((d,i)=><span key={i} style={{width:'3px',background:'#C59881',height: isPlaying ? '14px' : '4px',transition:'height 0.3s',animationDelay:`${d}ms`}} className={isPlaying?'bar-anim':''}/>)}
+                      </div>
+                      {t.music.t1}
+                    </li>
+                    <li style={{fontSize:'12px',color:'#9ca3af',display:'flex',alignItems:'center',gap:'10px',opacity:0.6}}>
+                      <span style={{width:'6px',height:'6px',borderRadius:'50%',background:'#d1d5db'}}/>
+                      {t.music.t2}
+                    </li>
+                    <li style={{fontSize:'12px',color:'#9ca3af',display:'flex',alignItems:'center',gap:'10px',opacity:0.6}}>
+                      <span style={{width:'6px',height:'6px',borderRadius:'50%',background:'#d1d5db'}}/>
+                      {t.music.t3}
+                    </li>
+                  </ul>
+                  <audio ref={audioRef} loop>
+                    <source src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" type="audio/mpeg"/>
+                  </audio>
+                </div>
+              )}
+            </div>
+            {/* Language */}
+            <div style={{position:'relative'}}>
+              <button onClick={()=>setShowLang(!showLang)} style={{display:'flex',alignItems:'center',gap:'6px',background:'none',border:'none',cursor:'pointer',color:'#C59881',fontSize:'11px',fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase'}}>
+                <Icon.Globe size={16}/> {lang.toUpperCase()}
+              </button>
+              {showLang && (
+                <div style={{position:'absolute',top:'100%',right:0,marginTop:'8px',width:'80px',background:'rgba(255,255,255,0.97)',border:'1px solid rgba(197,152,129,0.2)',borderRadius:'2px',overflow:'hidden',boxShadow:'0 10px 30px rgba(0,0,0,0.08)',zIndex:200}}>
+                  {['pt','en','es'].map(l=>(
+                    <button key={l} onClick={()=>{setLang(l);setShowLang(false);}} style={{display:'block',width:'100%',padding:'10px',textAlign:'center',fontSize:'10px',textTransform:'uppercase',letterSpacing:'0.1em',background: lang===l ? 'rgba(197,152,129,0.08)' : 'transparent',color: lang===l ? '#C59881' : '#6b7280',fontWeight: lang===l ? 700 : 400,border:'none',cursor:'pointer'}}>
+                      {l.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button onClick={()=>setMobileOpen(!mobileOpen)} style={{display:'none',background:'none',border:'none',cursor:'pointer',color:'#C59881'}} className="block lg:hidden">
+            {mobileOpen ? <Icon.X/> : <Icon.Menu/>}
+          </button>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileOpen && (
+          <div style={{background:'white',padding:'24px',borderTop:'1px solid rgba(197,152,129,0.15)',display:'flex',flexDirection:'column',gap:'20px'}}>
+            {[['#legado',t.nav.legacy],['#hairspa',t.nav.spa],['#misterio',t.nav.kits],['#diagnostico',t.nav.diag]].map(([href,label])=>(
+              <a key={href} href={href} onClick={()=>setMobileOpen(false)} style={{fontSize:'11px',letterSpacing:'0.25em',textTransform:'uppercase',fontWeight:700,color:'#2C2C2C',textDecoration:'none'}}>{label}</a>
+            ))}
+            <div style={{display:'flex',gap:'16px',paddingTop:'8px'}}>
+              {['pt','en','es'].map(l=>(
+                <button key={l} onClick={()=>{setLang(l);}} style={{fontSize:'10px',textTransform:'uppercase',fontWeight:700,letterSpacing:'0.15em',background:'none',border:'none',cursor:'pointer',color: lang===l ? '#C59881' : '#9ca3af'}}>
+                  {l.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* ======= HERO ======= */}
+      <section style={{minHeight:'100vh',display:'flex',alignItems:'center',paddingTop:'96px',position:'relative',overflow:'hidden',background:'linear-gradient(135deg, #F2EDE7 0%, #EDE6DF 50%, #E4D9D0 100%)'}}>
+        {/* Decorative bg elements */}
+        <div style={{position:'absolute',top:'-10%',right:'-5%',width:'600px',height:'600px',borderRadius:'50%',background:'radial-gradient(circle, rgba(197,152,129,0.12) 0%, transparent 70%)',pointerEvents:'none'}}/>
+        <div style={{position:'absolute',bottom:'-10%',left:'-5%',width:'400px',height:'400px',borderRadius:'50%',background:'radial-gradient(circle, rgba(74,99,77,0.08) 0%, transparent 70%)',pointerEvents:'none'}}/>
+        
+        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px',display:'grid',gridTemplateColumns:'1fr 1fr',gap:'48px',alignItems:'center',width:'100%',position:'relative',zIndex:1}}>
+          <div style={{display:'flex',flexDirection:'column',gap:'32px'}}>
+            <div style={{display:'inline-block',padding:'6px 16px',background:'rgba(255,255,255,0.7)',backdropFilter:'blur(8px)',border:'1px solid rgba(197,152,129,0.25)',fontSize:'10px',letterSpacing:'0.4em',textTransform:'uppercase',color:'#C59881',fontWeight:700,borderRadius:'999px',alignSelf:'flex-start'}}>
+              {t.hero.tag}
+            </div>
+            <h1 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(3rem,6vw,5rem)',lineHeight:0.95,letterSpacing:'-0.02em',margin:0}}>
+              {t.hero.t1}<br/>
+              <span style={{fontStyle:'italic',fontWeight:300,color:'#C59881',fontSize:'clamp(2.5rem,5vw,4.5rem)'}}>{t.hero.t2}</span>
+            </h1>
+            <p style={{maxWidth:'480px',color:'#555',lineHeight:1.8,fontSize:'1.125rem',fontWeight:300,margin:0}}>
+              {t.hero.desc}
+            </p>
+            <div>
+              <a href="#diagnostico" className="btn-premium" style={{padding:'20px 48px',fontSize:'11px',letterSpacing:'0.3em',textTransform:'uppercase',display:'inline-flex',alignItems:'center',gap:'16px',borderRadius:'2px',textDecoration:'none',fontWeight:700,boxShadow:'0 8px 32px rgba(197,152,129,0.3)'}}>
+                {t.hero.btn} <Icon.ArrowRight size={14}/>
+              </a>
+            </div>
+          </div>
+
+          {/* Hero Visual */}
+          <div style={{display:'flex',justifyContent:'center'}}>
+            <div className="venus-frame" style={{width:'100%',maxWidth:'460px',overflow:'hidden',boxShadow:'0 40px 100px rgba(197,152,129,0.25)',border:'12px solid white',position:'relative',background:'linear-gradient(160deg, #C59881 0%, #D4A896 20%, #E8C5B0 40%, #8FA899 65%, #4A634D 85%, #2C3E30 100%)'}}>
+              {/* Decorative overlay text */}
+              <div style={{position:'absolute',inset:0,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'40px',textAlign:'center'}}>
+                <MainLogo size={90} showText={false}/>
+                <div style={{marginTop:'20px',color:'white',fontFamily:"'Playfair Display',serif",fontSize:'1.5rem',fontStyle:'italic',opacity:0.9}}>Cabelos com Amor</div>
+                <div style={{marginTop:'8px',color:'rgba(255,255,255,0.7)',fontSize:'9px',letterSpacing:'0.4em',textTransform:'uppercase',fontWeight:700}}>Haskell Atelier</div>
+                <div style={{marginTop:'32px',width:'40px',height:'1px',background:'rgba(255,255,255,0.4)'}}/>
+                <div style={{marginTop:'20px',color:'rgba(255,255,255,0.6)',fontSize:'11px',letterSpacing:'0.2em',textTransform:'uppercase',fontWeight:600}}>Diagnóstico Personalizado</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ======= LEGACY ======= */}
+      <section id="legado" style={{padding:'128px 0',background:'white'}}>
+        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px'}}>
+          <div style={{display:'grid',gridTemplateColumns:'5fr 7fr',gap:'80px',alignItems:'start'}}>
+            <div style={{position:'sticky',top:'160px'}}>
+              <Icon.Eye size={40} style={{color:'#C59881',marginBottom:'32px'}}/>
+              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'3rem',lineHeight:1.1,marginBottom:'24px'}}>
+                Hair <br/><span style={{fontStyle:'italic'}}>Intellectualism</span>
+              </h2>
+              <p style={{fontSize:'10px',letterSpacing:'0.4em',textTransform:'uppercase',color:'#9ca3af',fontWeight:800,marginBottom:'32px'}}>{t.legacy.tag}</p>
+              <p style={{color:'#6b7280',fontWeight:300,lineHeight:1.8,fontSize:'1.25rem',fontStyle:'italic',maxWidth:'340px'}}>{t.legacy.quote}</p>
+            </div>
+            <div style={{display:'flex',flexDirection:'column',gap:'48px'}}>
+              <p style={{color:'#4b5563',fontWeight:300,lineHeight:2,fontSize:'1.125rem'}}>{t.legacy.p1}</p>
+              <div style={{position:'relative',padding:'64px 48px',background:'#F9F6F2',borderRadius:'2px',overflow:'hidden'}}>
+                <blockquote style={{fontFamily:"'Playfair Display',serif",fontStyle:'italic',fontSize:'1.75rem',color:'#2C2C2C',lineHeight:1.4}}>
+                  {t.legacy.bq}
+                </blockquote>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ======= HAIR SPA ======= */}
+      <section id="hairspa" style={{padding:'128px 0',background:'#F9F6F2'}}>
+        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px'}}>
+          <div style={{maxWidth:'720px',margin:'0 auto',textAlign:'center',marginBottom:'96px'}}>
+            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'3rem',marginBottom:'24px',lineHeight:1.1}}>
+              {t.spa.t1} <span style={{fontStyle:'italic'}}>{t.spa.t2}</span> {t.spa.t3}
+            </h2>
+            <div style={{width:'64px',height:'2px',background:'#C59881',margin:'0 auto 24px'}}/>
+            <p style={{fontSize:'11px',letterSpacing:'0.5em',textTransform:'uppercase',color:'#9ca3af',fontWeight:700}}>{t.spa.tag}</p>
+          </div>
+
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'40px'}}>
+            {[
+              { icon: <Icon.Zap size={40}/>, color:'#4A634D', bgColor:'rgba(74,99,77,0.06)', title: t.spa.c1t, tag: t.spa.c1tag, desc: t.spa.c1d },
+              { icon: <Icon.Droplets size={40}/>, color:'#C59881', bgColor:'rgba(197,152,129,0.06)', title: t.spa.c2t, tag: t.spa.c2tag, desc: t.spa.c2d },
+              { icon: <Icon.Sparkle size={40}/>, color:'#9ca3af', bgColor:'rgba(156,163,175,0.06)', title: t.spa.c3t, tag: t.spa.c3tag, desc: t.spa.c3d },
+            ].map((card,i)=>(
+              <div key={i} style={{background:'white',padding:'48px',boxShadow:'0 1px 3px rgba(0,0,0,0.05)',border:'1px solid #f3f4f6',borderRadius:'2px',display:'flex',flexDirection:'column',alignItems:'center',textAlign:'center',transition:'all 0.3s',cursor:'default'}}
+                onMouseOver={e=>{e.currentTarget.style.boxShadow='0 20px 60px rgba(0,0,0,0.1)';}}
+                onMouseOut={e=>{e.currentTarget.style.boxShadow='0 1px 3px rgba(0,0,0,0.05)';}}>
+                <div style={{width:'96px',height:'96px',background:card.bgColor,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:'32px',color:card.color}}>{card.icon}</div>
+                <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:'1.5rem',marginBottom:'12px',textTransform:'uppercase',letterSpacing:'-0.02em'}}>{card.title}</h3>
+                <p style={{color:card.color,fontSize:'10px',letterSpacing:'0.4em',textTransform:'uppercase',marginBottom:'24px',fontWeight:700}}>{card.tag}</p>
+                <p style={{color:'#6b7280',fontSize:'14px',fontWeight:300,lineHeight:1.8}}>{card.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ======= MYSTERY KITS ======= */}
+      <section id="misterio" style={{padding:'128px 0',background:'white',overflow:'hidden'}}>
+        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px'}}>
+          <div style={{display:'grid',gridTemplateColumns:'6fr 6fr',gap:'96px',alignItems:'center'}}>
+            <div style={{display:'flex',flexDirection:'column',gap:'40px'}}>
+              <div>
+                <span style={{color:'#C59881',fontSize:'10px',letterSpacing:'0.5em',textTransform:'uppercase',fontWeight:700,display:'block',marginBottom:'16px'}}>{t.mystery.tag}</span>
+                <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(2.5rem,4vw,3.75rem)',lineHeight:1.1,marginBottom:'16px'}}>
+                  {t.mystery.t1}<br/><span style={{fontStyle:'italic',fontWeight:300}}>{t.mystery.t2}</span>
+                </h2>
+                <p style={{color:'#6b7280',fontWeight:300,lineHeight:1.9,fontSize:'1.125rem'}}>{t.mystery.desc}</p>
+              </div>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'24px'}}>
+                <div style={{padding:'32px',background:'#F9F6F2',borderTop:'4px solid #C59881',cursor:'default',transition:'all 0.3s'}}
+                  onMouseOver={e=>{e.currentTarget.style.boxShadow='0 20px 40px rgba(0,0,0,0.08)';}}
+                  onMouseOut={e=>{e.currentTarget.style.boxShadow='none';}}>
+                  <Icon.Package size={32} style={{color:'#C59881',marginBottom:'16px'}}/>
+                  <h4 style={{fontFamily:"'Playfair Display',serif",fontSize:'1.25rem',marginBottom:'4px'}}>{t.mystery.box1}</h4>
+                  <p style={{fontSize:'9px',textTransform:'uppercase',letterSpacing:'0.2em',opacity:0.5,fontStyle:'italic',fontWeight:700}}>{t.mystery.box1tag}</p>
+                </div>
+                <div style={{padding:'32px',background:'#F9F6F2',borderTop:'4px solid #4A634D',cursor:'default',transition:'all 0.3s'}}
+                  onMouseOver={e=>{e.currentTarget.style.boxShadow='0 20px 40px rgba(0,0,0,0.08)';}}
+                  onMouseOut={e=>{e.currentTarget.style.boxShadow='none';}}>
+                  <Icon.Stars size={32} style={{color:'#4A634D',marginBottom:'16px'}}/>
+                  <h4 style={{fontFamily:"'Playfair Display',serif",fontSize:'1.25rem',marginBottom:'4px'}}>{t.mystery.box2}</h4>
+                  <p style={{fontSize:'9px',textTransform:'uppercase',letterSpacing:'0.2em',opacity:0.5,fontStyle:'italic',fontWeight:700}}>{t.mystery.box2tag}</p>
+                </div>
+              </div>
+            </div>
+
+            <div style={{background:'rgba(249,246,242,0.6)',padding:'64px',borderRadius:'2px',border:'1px solid #f9fafb'}}>
+              <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:'1.875rem',marginBottom:'8px',lineHeight:1.2}}>{t.mystery.rTitle}</h3>
+              <p style={{color:'#9ca3af',fontSize:'14px',fontWeight:500,fontStyle:'italic',marginBottom:'40px'}}>{t.mystery.rDesc}</p>
+              <ul style={{listStyle:'none',display:'grid',gridTemplateColumns:'1fr 1fr',gap:'24px'}}>
+                {[
+                  [<Icon.Flower size={14}/>, t.mystery.items[0]],
+                  [<span style={{fontSize:'11px'}}>🧢</span>, t.mystery.items[1]],
+                  [<span style={{fontSize:'11px'}}>✂️</span>, t.mystery.items[2]],
+                  [<span style={{fontSize:'11px'}}>♻</span>, t.mystery.items[3]],
+                  [<span style={{fontSize:'11px'}}>💆</span>, t.mystery.items[4]],
+                  [<Icon.Pipette size={14}/>, t.mystery.items[5]],
+                ].map(([icon, label], i) => (
+                  <li key={i} style={{display:'flex',alignItems:'center',gap:'16px',cursor:'default',padding:'4px 0'}}>
+                    <div style={{padding:'10px',background:'white',borderRadius:'50%',color:'#C59881',boxShadow:'0 1px 4px rgba(0,0,0,0.06)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>{icon}</div>
+                    <span style={{fontSize:'10px',letterSpacing:'0.15em',textTransform:'uppercase',fontWeight:600,color:'#6b7280'}}>{label}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ======= DIAGNOSIS / FORM ======= */}
+      <section id="diagnostico" style={{padding:'128px 0',background:'#2C2C2C',color:'white',position:'relative',overflow:'hidden'}}>
+        {/* Bg decoration */}
+        <div style={{position:'absolute',top:'-20%',right:'-10%',width:'600px',height:'600px',borderRadius:'50%',background:'radial-gradient(circle, rgba(197,152,129,0.06) 0%, transparent 70%)',pointerEvents:'none'}}/>
+        
+        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px',position:'relative',zIndex:1}}>
+          <div style={{maxWidth:'1100px',margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 1fr',gap:'96px',alignItems:'center'}}>
+            <div style={{display:'flex',flexDirection:'column',gap:'32px'}}>
+              <span style={{color:'#C59881',fontSize:'11px',letterSpacing:'0.6em',textTransform:'uppercase',fontWeight:700}}>{t.diag.tag}</span>
+              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(3rem,5vw,4.5rem)',lineHeight:1.05,fontStyle:'italic',margin:0}}>
+                {t.diag.t1}<br/><span style={{fontStyle:'normal'}}>{t.diag.t2}</span>
+              </h2>
+              <p style={{color:'#9ca3af',fontWeight:300,lineHeight:1.9,fontSize:'1.25rem',maxWidth:'440px'}}>{t.diag.desc}</p>
+              <div style={{display:'flex',gap:'48px',opacity:0.25,paddingTop:'32px'}}>
+                {[[<Icon.Brain size={44}/>,t.diag.i1],[<Icon.History size={44}/>,t.diag.i2],[<Icon.User size={44}/>,t.diag.i3]].map(([icon,label],i)=>(
+                  <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'8px'}}>
+                    {icon}
+                    <span style={{fontSize:'9px',textTransform:'uppercase',letterSpacing:'0.2em'}}>{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{background:'white',padding:'64px',borderRadius:'2px',boxShadow:'0 40px 100px rgba(0,0,0,0.3)',color:'#2C2C2C'}}>
+              {formStatus === 'success' ? (
+                <div style={{textAlign:'center',padding:'48px 0'}}>
+                  <Icon.Check size={48} style={{color:'#4A634D',margin:'0 auto 32px'}}/>
+                  <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:'2.5rem',marginBottom:'16px'}}>{t.diag.s1}</h3>
+                  <p style={{color:'#6b7280',marginBottom:'40px'}}>{t.diag.s2}</p>
+                  <button onClick={()=>setFormStatus('idle')} style={{color:'#C59881',textTransform:'uppercase',fontSize:'10px',fontWeight:700,letterSpacing:'0.15em',background:'none',border:'none',borderBottom:'1px solid #C59881',paddingBottom:'4px',cursor:'pointer'}}>{t.diag.s3}</button>
+                </div>
+              ) : (
+                <>
+                  <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:'2rem',marginBottom:'48px',textAlign:'center'}}>{t.diag.formTitle}</h3>
+                  <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',gap:'32px'}}>
+                    {[
+                      {label:t.diag.l1, type:'text', placeholder:t.diag.p1},
+                      {label:t.diag.l2, type:'tel', placeholder:t.diag.p2},
+                    ].map((f,i)=>(
+                      <div key={i}>
+                        <label className="field-label">{f.label}</label>
+                        <input required type={f.type} placeholder={f.placeholder} className="input-field"/>
+                      </div>
+                    ))}
+                    <div>
+                      <label className="field-label">{t.diag.l3}</label>
+                      <div style={{position:'relative'}}>
+                        <select className="input-field">
+                          <option value="">{t.diag.o3_0}</option>
+                          <option>{t.diag.o3_1}</option><option>{t.diag.o3_2}</option>
+                          <option>{t.diag.o3_3}</option><option>{t.diag.o3_4}</option>
+                        </select>
+                        <div style={{position:'absolute',right:0,top:'50%',transform:'translateY(-50%)',pointerEvents:'none',color:'#d1d5db'}}><Icon.ChevronDown/></div>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="field-label">{t.diag.l4}</label>
+                      <div style={{position:'relative'}}>
+                        <select className="input-field">
+                          <option>{t.diag.o4_1}</option><option>{t.diag.o4_2}</option>
+                          <option>{t.diag.o4_3}</option><option>{t.diag.o4_4}</option>
+                          <option>{t.diag.o4_5}</option>
+                        </select>
+                        <div style={{position:'absolute',right:0,top:'50%',transform:'translateY(-50%)',pointerEvents:'none',color:'#d1d5db'}}><Icon.ChevronDown/></div>
+                      </div>
+                    </div>
+                    <button type="submit" disabled={formStatus==='submitting'} className="btn-premium" style={{width:'100%',padding:'22px',fontSize:'12px',letterSpacing:'0.4em',textTransform:'uppercase',border:'none',cursor:'pointer',borderRadius:'2px',fontWeight:700,marginTop:'8px'}}>
+                      {formStatus === 'submitting' ? '...' : t.diag.btn}
+                    </button>
+                  </form>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ======= ETHICS BAR ======= */}
+      <section style={{padding:'48px 0',background:'white',borderTop:'1px solid #f9fafb'}}>
+        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px',display:'flex',justifyContent:'center',gap:'64px',flexWrap:'wrap',opacity:0.5}}>
+          <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
+            <Icon.Leaf size={20} style={{color:'#4A634D'}}/>
+            <span style={{fontSize:'10px',letterSpacing:'0.3em',textTransform:'uppercase',fontWeight:700}}>{t.footer.vegan}</span>
+          </div>
+          <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
+            <Icon.Paw size={20} style={{color:'#4A634D'}}/>
+            <span style={{fontSize:'10px',letterSpacing:'0.3em',textTransform:'uppercase',fontWeight:700}}>{t.footer.cruelty}</span>
+          </div>
+        </div>
+      </section>
+
+      {/* ======= FOOTER ======= */}
+      <footer style={{padding:'96px 0',background:'white',borderTop:'1px solid #f9fafb'}}>
+        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'40px'}}>
+          <div style={{display:'flex',alignItems:'center',gap:'16px'}}>
+            <MainLogo size={80} showText={false}/>
+            <div>
+              <div style={{fontFamily:"'Playfair Display',serif",fontSize:'1.875rem',fontWeight:700,marginBottom:'4px',letterSpacing:'-0.02em'}}>Cabelos com Amor</div>
+              <p style={{fontSize:'10px',letterSpacing:'0.2em',color:'#C59881',textTransform:'uppercase',fontWeight:800}}>{t.footer.sub}</p>
+            </div>
+          </div>
+          <div style={{fontSize:'11px',letterSpacing:'0.2em',color:'#d1d5db',textTransform:'uppercase',fontWeight:700,textAlign:'right'}}>
+            © {new Date().getFullYear()} CABELO VÊNUS • TODOS OS DIREITOS RESERVADOS.
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
