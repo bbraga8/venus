@@ -199,7 +199,15 @@ const App = () => {
     else { audioRef.current?.play().catch(()=>{}); }
     setIsPlaying(!isPlaying);
   };
-   
+  
+  const images = [
+	"/venus/img/1.jpg",
+	"/venus/img/2.jpg",
+	"/venus/img/3.jpg",
+	"/venus/img/4.jpg",
+	"/venus/img/5.jpg"
+  ];
+  // codigo para FormSpree
  const handleSubmit = async (e) => {
   e.preventDefault();
   setFormStatus('submitting');
