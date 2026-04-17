@@ -9,15 +9,30 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bronze: '#C59881',
+            sage: '#4A634D',
+            dark: '#2C2C2C',
+            sand: '#F9F6F2'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #F9F6F2; color: #2C2C2C; overflow-x: hidden; }
     .font-serif { font-family: 'Playfair Display', serif !important; }
-    body { font-family: 'Inter', sans-serif; background: #F9F6F2; color: #2C2C2C; overflow-x: hidden; }
-    .text-bronze { color: #C59881 !important; }
-    .bg-bronze { background-color: #C59881 !important; }
-    .border-bronze { border-color: #C59881 !important; }
-    .bg-sage { background-color: #4A634D !important; }
-    .text-sage { color: #4A634D !important; }
     .venus-frame { border-radius: 500px 500px 20px 20px; aspect-ratio: 4 / 5.5; }
     .btn-premium { background: #C59881; color: white; transition: all 0.4s ease; }
     .btn-premium:hover { background: #b1846f; transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(197,152,129,0.4); }
@@ -33,33 +48,17 @@
       75%  { transform: translateY(80vh) rotate(225deg) translateX(25px); }
       100% { transform: translateY(115vh) rotate(360deg) translateX(0); opacity: 0; }
     }
-    .petal { position: fixed; pointer-events: none; z-index: 9999; animation-name: fallSway; animation-timing-function: ease-in-out; animation-iteration-count: infinite; border-radius: 0 85% 0 85%; opacity: 0.3; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .spin { animation: spin 1s linear infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
-    .bar-anim { animation: pulse 0.8s ease-in-out infinite; }
-    .hero-bg {
-      background: linear-gradient(135deg, #F2EDE7 0%, #EAE0D8 30%, #DDD0C4 60%, #C59881 100%);
-      position: relative;
-    }
-    .hero-bg::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C59881' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    }
-    .hero-visual {
-      background: linear-gradient(160deg, #C59881 0%, #D4A896 25%, #E8C5B0 50%, #4A634D 80%, #2C3E30 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .input-field { width: 100%; border: none; border-bottom: 1px solid #e5e7eb; padding: 12px 0; font-size: 1.125rem; background: transparent; outline: none; color: #2C2C2C; font-family: 'Inter', sans-serif; }
+    .petal { position: fixed; pointer-events: none; z-index: 50; animation-name: fallSway; animation-timing-function: ease-in-out; animation-iteration-count: infinite; border-radius: 0 85% 0 85%; opacity: 0.3; }
+    @keyframes pulse-bar { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+    .bar-anim { animation: pulse-bar 0.8s ease-in-out infinite; }
+    
+    .input-field { width: 100%; border: none; border-bottom: 1px solid #e5e7eb; padding: 12px 0; font-size: 1rem; background: transparent; outline: none; color: #2C2C2C; font-family: 'Inter', sans-serif; transition: border-color 0.3s; }
+    @media (min-width: 1024px) { .input-field { font-size: 1.125rem; } }
     .input-field:focus { border-bottom-color: #C59881; }
     select.input-field { cursor: pointer; appearance: none; color: #6b7280; }
     .nav-link { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700; text-decoration: none; color: #2C2C2C; transition: color 0.2s; }
     .nav-link:hover { color: #C59881; }
-    label.field-label { display: block; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 800; color: #9ca3af; margin-bottom: 4px; }
+    .field-label { display: block; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 800; color: #9ca3af; margin-bottom: 4px; }
   </style>
 </head>
 <body>
@@ -115,6 +114,10 @@ const Icon = {
   Package: ({size=32}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>,
   Stars: ({size=32}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>,
   Flower: ({size=14}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2a3 3 0 0 0 0 6 3 3 0 0 0 0-6"/><path d="M12 16a3 3 0 0 0 0 6 3 3 0 0 0 0-6"/><path d="M2 12a3 3 0 0 0 6 0 3 3 0 0 0-6 0"/><path d="M16 12a3 3 0 0 0 6 0 3 3 0 0 0-6 0"/></svg>,
+  Bonnet: ({size=14}) => <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 4C7.5 4 4 7 4 11c0 2 1 3.5 2 4.5V19h12v-3.5c1-1 2-2.5 2-4.5 0-4-3.5-7-8-7z" /><path d="M6 19c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2" /></svg>,
+  BananaClip: ({size=14}) => <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 18c0-5 4-10 12-10 12 0 4 2 4 4s-4 6-12 6c-2 0-4-2-4-2z" /><path d="M8 11l1 2M11 9l1 2M14 9l1 2M17 11l1 2" /></svg>,
+  Comb: ({size=14}) => <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="6" width="18" height="4" rx="1" /><path d="M5 10v6M8 10v6M11 10v6M14 10v6M17 10v6M20 10v6" /></svg>,
+  ScalpMassager: ({size=14}) => <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 4v4" /><path d="M6 8c0 3.3 2.7 6 6 6s6-2.7 6-6H6z" /><path d="M8 14l-1 4M11 14l-1 5M14 14l1 5M17 14l1 4" /></svg>,
   Pipette: ({size=14}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z"/></svg>,
   Brain: ({size=44}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.44-4.14L9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.44-4.14L14.5 2Z"/></svg>,
   History: ({size=44}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>,
@@ -130,8 +133,8 @@ const Icon = {
 
 // ============ LOGO ============
 const MainLogo = ({ size = 80, showText = true }) => (
-  <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'8px', width: size }}>
-    <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:'100%',height:'auto'}}>
+  <div className="flex flex-col items-center gap-2" style={{ width: size }}>
+    <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
       <g opacity="0.8">
         <path d="M40 100C30 90 25 70 35 55M160 100C170 90 175 70 165 55" stroke="#4A634D" strokeWidth="1.5" strokeLinecap="round"/>
         <path d="M45 110C35 120 30 140 40 145M155 110C165 120 170 140 160 145" stroke="#4A634D" strokeWidth="1.5" strokeLinecap="round"/>
@@ -146,24 +149,33 @@ const MainLogo = ({ size = 80, showText = true }) => (
         <rect x="94" y="132" width="12" height="4" rx="2" fill="#C59881"/>
       </g>
     </svg>
-    {showText && <span style={{color:'#C59881', fontFamily:"'Playfair Display',serif", fontStyle:'italic', fontSize:'1.125rem', lineHeight:1}}>Cabelos com Amor</span>}
+    {showText && <span className="text-bronze font-serif italic text-lg leading-none">Cabelos com Amor</span>}
   </div>
 );
 
 // ============ PETALS ============
 const PetalsRain = () => {
   const colors = ['#C59881','#EAE3DB','#4A634D','#F9F6F2'];
-  const petals = Array.from({length: 20}).map((_, i) => ({
-    id: i,
-    left: (Math.random() * 100) + '%',
-    delay: (Math.random() * 12) + 's',
-    duration: (10 + Math.random() * 8) + 's',
-    width: (10 + Math.random() * 14) + 'px',
-    height: (14 + Math.random() * 18) + 'px',
-    color: colors[Math.floor(Math.random() * colors.length)],
-  }));
+  const [petals, setPetals] = useState([]);
+  
+  useEffect(() => {
+    // Menos pétalas em ecrãs móveis para melhorar a performance
+    const isMobile = window.innerWidth < 768;
+    const petalCount = isMobile ? 10 : 20;
+    
+    setPetals(Array.from({length: petalCount}).map((_, i) => ({
+      id: i,
+      left: (Math.random() * 100) + '%',
+      delay: (Math.random() * 12) + 's',
+      duration: (10 + Math.random() * 8) + 's',
+      width: (10 + Math.random() * 14) + 'px',
+      height: (14 + Math.random() * 18) + 'px',
+      color: colors[Math.floor(Math.random() * colors.length)],
+    })));
+  }, []);
+  
   return (
-    <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:9999,overflow:'hidden'}}>
+    <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
       {petals.map(p => (
         <div key={p.id} className="petal" style={{
           left: p.left, width: p.width, height: p.height,
@@ -185,6 +197,10 @@ const App = () => {
   const [showLang, setShowLang] = useState(false);
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  
+  // Estado para o tratamento selecionado no Hair Spa (apenas um)
+  const [selectedSpaItem, setSelectedSpaItem] = useState(null);
+  
   const audioRef = useRef(null);
   const t = T[lang];
 
@@ -199,113 +215,115 @@ const App = () => {
     else { audioRef.current?.play().catch(()=>{}); }
     setIsPlaying(!isPlaying);
   };
+  
+  const toggleSpaItem = (index) => {
+    setSelectedSpaItem(prev => prev === index ? null : index);
+  };
 
   const images = [
-	"https://cdn.cabelovenus.com/img/1.png",
-	"https://cdn.cabelovenus.com/img/2.png",
-	"https://cdn.cabelovenus.com/img/3.png",
-	"https://cdn.cabelovenus.com/img/4.png",
-	"https://cdn.cabelovenus.com/img/5.png"
+    "https://cdn.cabelovenus.com/img/1.png",
+    "https://cdn.cabelovenus.com/img/2.png",
+    "https://cdn.cabelovenus.com/img/3.png",
+    "https://cdn.cabelovenus.com/img/4.png",
+    "https://cdn.cabelovenus.com/img/5.png"
   ];
   const [index, setIndex] = useState(0);
+  
   useEffect(() => {
-	const interval = setInterval(() => {
-		setIndex((prev) => (prev + 1) % images.length);
-	}, 3000); // troca a cada 3s
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
 
-	return () => clearInterval(interval);
+    return () => clearInterval(interval);
   }, []);
 
-  // codigo para FormSpree
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  setFormStatus('submitting');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setFormStatus('submitting');
+    const formData = new FormData(e.target);
 
-  const formData = new FormData(e.target);
+    // Se quiser adicionar as escolhas do kit mistério no formulário ao enviar:
+    // formData.append("kitSelections", Array.from(selectedMysteryItems).map(i => t.mystery.items[i]).join(", "));
 
-  try {
-    const res = await fetch("https://formspree.io/f/xojyvkeq", {
-      method: "POST",
-      body: formData,
-      headers: {
-        Accept: "application/json"
+    try {
+      const res = await fetch("https://formspree.io/f/xojyvkeq", {
+        method: "POST",
+        body: formData,
+        headers: { Accept: "application/json" }
+      });
+      await new Promise(r => setTimeout(r, 800));
+
+      if (res.ok) {
+        setFormStatus('success');
+        e.target.reset();
+      } else {
+        setFormStatus('error');
       }
-    });
-    await new Promise(r => setTimeout(r, 800));
-
-    if (res.ok) {
-      setFormStatus('success');
-      e.target.reset();
-    } else {
+    } catch (err) {
+      await new Promise(r => setTimeout(r, 800));
       setFormStatus('error');
     }
-  } catch (err) {
-    await new Promise(r => setTimeout(r, 800));
-    setFormStatus('error');
-  }
-};
+  };
 
-  const navBg = scrolled || mobileOpen ? 'rgba(255,255,255,0.96)' : 'transparent';
-  const navPy = scrolled || mobileOpen ? '12px' : '24px';
+  const navBg = scrolled || mobileOpen ? 'bg-white/95 backdrop-blur-md' : 'bg-transparent';
+  const navPy = scrolled || mobileOpen ? 'py-3' : 'py-6';
+  const navShadow = scrolled ? 'shadow-sm' : 'shadow-none';
 
   return (
-    <div style={{minHeight:'100vh', background:'#F9F6F2', overflowX:'hidden'}}>
+    <div className="min-h-screen bg-sand text-dark overflow-x-hidden relative font-sans">
       <PetalsRain />
 
       {/* ======= NAV ======= */}
-      <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:1000,background:navBg,backdropFilter:'blur(12px)',padding:`${navPy} 0`,transition:'all 0.6s',boxShadow: scrolled ? '0 1px 20px rgba(0,0,0,0.05)' : 'none'}}>
-        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${navBg} ${navPy} ${navShadow}`}>
+        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
           
           {/* Brand */}
-          <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
+          <div className="flex items-center gap-3">
             <MainLogo size={scrolled ? 56 : 68} showText={false}/>
             <div>
-              <div style={{fontSize:'1.25rem',fontFamily:"'Playfair Display',serif",fontWeight:700,lineHeight:1,letterSpacing:'-0.02em'}}>Cabelos com Amor</div>
-              <div style={{fontSize:'9px',letterSpacing:'0.3em',textTransform:'uppercase',opacity:0.5,fontWeight:700,marginTop:'2px'}}>Haskell Atelier</div>
+              <div className="font-serif font-bold text-xl md:text-2xl leading-none tracking-tight">Cabelos com Amor</div>
+              <div className="text-[9px] tracking-[0.3em] uppercase opacity-50 font-bold mt-1">Haskell Atelier</div>
             </div>
           </div>
 
           {/* Desktop Nav Links */}
-          <div style={{display:'flex',gap:'40px',alignItems:'center'}} className="hidden lg:flex">
+          <div className="hidden lg:flex items-center gap-10">
             {[['#legado',t.nav.legacy],['#hairspa',t.nav.spa],['#misterio',t.nav.kits]].map(([href,label])=>(
               <a key={href} href={href} className="nav-link">{label}</a>
             ))}
-            <a href="#diagnostico" style={{padding:'8px 20px',background:'rgba(74,99,77,0.06)',color:'#4A634D',borderRadius:'999px',border:'1px solid rgba(74,99,77,0.12)',fontSize:'10px',letterSpacing:'0.2em',textTransform:'uppercase',fontWeight:700,textDecoration:'none',transition:'all 0.2s'}}
-              onMouseOver={e=>{e.target.style.background='#4A634D';e.target.style.color='white';}}
-              onMouseOut={e=>{e.target.style.background='rgba(74,99,77,0.06)';e.target.style.color='#4A634D';}}
-            >{t.nav.diag}</a>
+            <a href="#diagnostico" className="px-5 py-2 bg-sage/5 text-sage rounded-full border border-sage/10 text-[10px] tracking-[0.2em] uppercase font-bold transition-all hover:bg-sage hover:text-white">
+              {t.nav.diag}
+            </a>
           </div>
 
-          {/* Right Controls */}
-          <div style={{display:'flex',alignItems:'center',gap:'24px'}} className="hidden lg:flex">
+          {/* Right Controls (Desktop) */}
+          <div className="hidden lg:flex items-center gap-6">
             {/* Music */}
-            <div style={{position:'relative'}}>
-              <button onClick={()=>setShowPlaylist(!showPlaylist)} style={{display:'flex',alignItems:'center',gap:'8px',border:'1px solid #C59881',color:'#C59881',padding:'8px 20px',fontSize:'10px',letterSpacing:'0.2em',textTransform:'uppercase',fontWeight:700,background:'transparent',cursor:'pointer',borderRadius:'2px',transition:'all 0.2s'}}
-                onMouseOver={e=>{e.currentTarget.style.background='#C59881';e.currentTarget.style.color='white';}}
-                onMouseOut={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.color='#C59881';}}>
+            <div className="relative">
+              <button onClick={()=>setShowPlaylist(!showPlaylist)} className="flex items-center gap-2 border border-bronze text-bronze px-5 py-2.5 text-[10px] tracking-[0.2em] uppercase font-bold rounded-sm transition-all hover:bg-bronze hover:text-white bg-transparent">
                 <Icon.Music size={14}/> {t.music.btn}
               </button>
               {showPlaylist && (
-                <div style={{position:'absolute',top:'100%',right:0,marginTop:'12px',width:'280px',background:'rgba(255,255,255,0.97)',border:'1px solid rgba(197,152,129,0.2)',padding:'24px',borderRadius:'2px',boxShadow:'0 20px 60px rgba(0,0,0,0.1)',zIndex:200}}>
-                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}}>
-                    <span style={{fontSize:'10px',letterSpacing:'0.2em',textTransform:'uppercase',fontWeight:700,color:'#9ca3af'}}>{t.music.title}</span>
-                    <button onClick={togglePlay} style={{background:'rgba(197,152,129,0.1)',border:'none',borderRadius:'50%',width:'36px',height:'36px',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:'#C59881'}}>
+                <div className="absolute top-full right-0 mt-3 w-72 bg-white/95 backdrop-blur-md border border-bronze/20 p-6 rounded-sm shadow-2xl z-[200]">
+                  <div className="flex justify-between items-center mb-5">
+                    <span className="text-[10px] tracking-[0.2em] uppercase font-bold text-gray-400">{t.music.title}</span>
+                    <button onClick={togglePlay} className="bg-bronze/10 text-bronze rounded-full w-9 h-9 flex items-center justify-center transition-all hover:bg-bronze hover:text-white">
                       {isPlaying ? <Icon.Pause size={14}/> : <Icon.Play size={14}/>}
                     </button>
                   </div>
-                  <ul style={{listStyle:'none',display:'flex',flexDirection:'column',gap:'14px'}}>
-                    <li style={{fontSize:'12px',color:'#C59881',fontWeight:500,display:'flex',alignItems:'center',gap:'10px'}}>
-                      <div style={{display:'flex',alignItems:'flex-end',gap:'2px',height:'14px'}}>
-                        {[0,75,0].map((d,i)=><span key={i} style={{width:'3px',background:'#C59881',height: isPlaying ? '14px' : '4px',transition:'height 0.3s',animationDelay:`${d}ms`}} className={isPlaying?'bar-anim':''}/>)}
+                  <ul className="flex flex-col gap-3.5 list-none">
+                    <li className="text-xs text-bronze font-medium flex items-center gap-2.5">
+                      <div className="flex items-end gap-[2px] h-3.5">
+                        {[0,75,0].map((d,i)=><span key={i} style={{animationDelay:`${d}ms`}} className={`w-[3px] bg-bronze transition-all duration-300 ${isPlaying ? 'h-3.5 bar-anim' : 'h-1'}`}/>)}
                       </div>
                       {t.music.t1}
                     </li>
-                    <li style={{fontSize:'12px',color:'#9ca3af',display:'flex',alignItems:'center',gap:'10px',opacity:0.6}}>
-                      <span style={{width:'6px',height:'6px',borderRadius:'50%',background:'#d1d5db'}}/>
+                    <li className="text-xs text-gray-400 flex items-center gap-2.5 opacity-60">
+                      <span className="w-1.5 h-1.5 rounded-full bg-gray-300"/>
                       {t.music.t2}
                     </li>
-                    <li style={{fontSize:'12px',color:'#9ca3af',display:'flex',alignItems:'center',gap:'10px',opacity:0.6}}>
-                      <span style={{width:'6px',height:'6px',borderRadius:'50%',background:'#d1d5db'}}/>
+                    <li className="text-xs text-gray-400 flex items-center gap-2.5 opacity-60">
+                      <span className="w-1.5 h-1.5 rounded-full bg-gray-300"/>
                       {t.music.t3}
                     </li>
                   </ul>
@@ -316,15 +334,15 @@ const App = () => {
               )}
             </div>
             {/* Language */}
-            <div style={{position:'relative'}}>
-              <button onClick={()=>setShowLang(!showLang)} style={{display:'flex',alignItems:'center',gap:'6px',background:'none',border:'none',cursor:'pointer',color:'#C59881',fontSize:'11px',fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase'}}>
-                <Icon.Globe size={16}/> {lang.toUpperCase()}
+            <div className="relative">
+              <button onClick={()=>setShowLang(!showLang)} className="flex items-center gap-1.5 bg-transparent border-none text-bronze text-[11px] font-bold tracking-[0.2em] uppercase transition-colors hover:text-[#b1846f] cursor-pointer">
+                <Icon.Globe size={16}/> {lang}
               </button>
               {showLang && (
-                <div style={{position:'absolute',top:'100%',right:0,marginTop:'8px',width:'80px',background:'rgba(255,255,255,0.97)',border:'1px solid rgba(197,152,129,0.2)',borderRadius:'2px',overflow:'hidden',boxShadow:'0 10px 30px rgba(0,0,0,0.08)',zIndex:200}}>
+                <div className="absolute top-full right-0 mt-2 w-20 bg-white/95 backdrop-blur-md border border-bronze/20 rounded-sm shadow-2xl overflow-hidden z-[200] flex flex-col">
                   {['pt','en','es'].map(l=>(
-                    <button key={l} onClick={()=>{setLang(l);setShowLang(false);}} style={{display:'block',width:'100%',padding:'10px',textAlign:'center',fontSize:'10px',textTransform:'uppercase',letterSpacing:'0.1em',background: lang===l ? 'rgba(197,152,129,0.08)' : 'transparent',color: lang===l ? '#C59881' : '#6b7280',fontWeight: lang===l ? 700 : 400,border:'none',cursor:'pointer'}}>
-                      {l.toUpperCase()}
+                    <button key={l} onClick={()=>{setLang(l);setShowLang(false);}} className={`w-full py-2.5 text-center text-[10px] uppercase tracking-wider transition-colors hover:bg-bronze/10 cursor-pointer ${lang===l ? 'bg-bronze/5 text-bronze font-bold' : 'text-gray-500 font-normal'}`}>
+                      {l}
                     </button>
                   ))}
                 </div>
@@ -333,64 +351,74 @@ const App = () => {
           </div>
 
           {/* Mobile hamburger */}
-          <button onClick={()=>setMobileOpen(!mobileOpen)} style={{display:'none',background:'none',border:'none',cursor:'pointer',color:'#C59881'}} className="block lg:hidden">
+          <button onClick={()=>setMobileOpen(!mobileOpen)} className="block lg:hidden text-bronze z-[101] relative bg-transparent border-none cursor-pointer">
             {mobileOpen ? <Icon.X/> : <Icon.Menu/>}
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu Overlay */}
         {mobileOpen && (
-          <div style={{background:'white',padding:'24px',borderTop:'1px solid rgba(197,152,129,0.15)',display:'flex',flexDirection:'column',gap:'20px'}}>
+          <div className="absolute top-full left-0 w-full bg-white border-t border-bronze/10 p-6 flex flex-col gap-5 shadow-xl lg:hidden">
             {[['#legado',t.nav.legacy],['#hairspa',t.nav.spa],['#misterio',t.nav.kits],['#diagnostico',t.nav.diag]].map(([href,label])=>(
-              <a key={href} href={href} onClick={()=>setMobileOpen(false)} style={{fontSize:'11px',letterSpacing:'0.25em',textTransform:'uppercase',fontWeight:700,color:'#2C2C2C',textDecoration:'none'}}>{label}</a>
+              <a key={href} href={href} onClick={()=>setMobileOpen(false)} className="text-[11px] tracking-[0.25em] uppercase font-bold text-dark no-underline">{label}</a>
             ))}
-            <div style={{display:'flex',gap:'16px',paddingTop:'8px'}}>
-              {['pt','en','es'].map(l=>(
-                <button key={l} onClick={()=>{setLang(l);}} style={{fontSize:'10px',textTransform:'uppercase',fontWeight:700,letterSpacing:'0.15em',background:'none',border:'none',cursor:'pointer',color: lang===l ? '#C59881' : '#9ca3af'}}>
-                  {l.toUpperCase()}
-                </button>
-              ))}
+            
+            <div className="w-full h-px bg-gray-100 my-2"></div>
+            
+            <div className="flex items-center justify-between">
+              <button onClick={togglePlay} className="flex items-center gap-2 text-bronze text-[10px] uppercase font-bold tracking-widest bg-transparent border-none cursor-pointer">
+                {isPlaying ? <Icon.Pause size={14}/> : <Icon.Play size={14}/>}
+                <span>{t.music.btn}</span>
+              </button>
+              
+              <div className="flex gap-4">
+                {['pt','en','es'].map(l=>(
+                  <button key={l} onClick={()=>{setLang(l);}} className={`text-[10px] uppercase font-bold tracking-[0.15em] bg-transparent border-none cursor-pointer ${lang===l ? 'text-bronze' : 'text-gray-400'}`}>
+                    {l}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}
       </nav>
 
       {/* ======= HERO ======= */}
-      <section style={{minHeight:'100vh',display:'flex',alignItems:'center',paddingTop:'96px',position:'relative',overflow:'hidden',background:'linear-gradient(135deg, #F2EDE7 0%, #EDE6DF 50%, #E4D9D0 100%)'}}>
+      <section className="min-h-[90vh] lg:min-h-screen flex items-center pt-32 pb-16 lg:pt-24 lg:pb-0 relative overflow-hidden bg-gradient-to-br from-[#F2EDE7] via-[#EDE6DF] to-[#E4D9D0]">
         {/* Decorative bg elements */}
-        <div style={{position:'absolute',top:'-10%',right:'-5%',width:'600px',height:'600px',borderRadius:'50%',background:'radial-gradient(circle, rgba(197,152,129,0.12) 0%, transparent 70%)',pointerEvents:'none'}}/>
-        <div style={{position:'absolute',bottom:'-10%',left:'-5%',width:'400px',height:'400px',borderRadius:'50%',background:'radial-gradient(circle, rgba(74,99,77,0.08) 0%, transparent 70%)',pointerEvents:'none'}}/>
+        <div className="absolute -top-[10%] -right-[5%] w-[400px] h-[400px] lg:w-[600px] lg:h-[600px] rounded-full opacity-50 pointer-events-none" style={{background:'radial-gradient(circle, rgba(197,152,129,0.15) 0%, transparent 70%)'}}/>
+        <div className="absolute -bottom-[10%] -left-[5%] w-[300px] h-[300px] lg:w-[400px] lg:h-[400px] rounded-full opacity-50 pointer-events-none" style={{background:'radial-gradient(circle, rgba(74,99,77,0.1) 0%, transparent 70%)'}}/>
         
-        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px',display:'grid',gridTemplateColumns:'1fr 1fr',gap:'48px',alignItems:'center',width:'100%',position:'relative',zIndex:1}}>
-          <div style={{display:'flex',flexDirection:'column',gap:'32px'}}>
-            <div style={{display:'inline-block',padding:'6px 16px',background:'rgba(255,255,255,0.7)',backdropFilter:'blur(8px)',border:'1px solid rgba(197,152,129,0.25)',fontSize:'10px',letterSpacing:'0.4em',textTransform:'uppercase',color:'#C59881',fontWeight:700,borderRadius:'999px',alignSelf:'flex-start'}}>
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full relative z-10">
+          <div className="flex flex-col gap-8 lg:gap-10 items-center text-center lg:items-start lg:text-left">
+            <div className="inline-block px-4 py-1.5 bg-white/70 backdrop-blur-sm border border-bronze/20 text-[9px] lg:text-[10px] tracking-[0.3em] uppercase text-bronze font-bold rounded-full mx-auto lg:mx-0">
               {t.hero.tag}
             </div>
-            <h1 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(3rem,6vw,5rem)',lineHeight:0.95,letterSpacing:'-0.02em',margin:0}}>
+            <h1 className="font-serif text-5xl md:text-6xl lg:text-[clamp(3.5rem,5vw,5rem)] leading-[1] tracking-tight m-0 text-dark">
               {t.hero.t1}<br/>
-              <span style={{fontStyle:'italic',fontWeight:300,color:'#C59881',fontSize:'clamp(2.5rem,5vw,4.5rem)'}}>{t.hero.t2}</span>
+              <span className="italic font-light text-bronze text-[clamp(2.5rem,6vw,4.5rem)]">{t.hero.t2}</span>
             </h1>
-            <p style={{maxWidth:'480px',color:'#555',lineHeight:1.8,fontSize:'1.125rem',fontWeight:300,margin:0}}>
+            <p className="text-gray-600 leading-relaxed text-base md:text-lg font-light max-w-[480px] mx-auto lg:mx-0">
               {t.hero.desc}
             </p>
-            <div>
-              <a href="#diagnostico" className="btn-premium" style={{padding:'20px 48px',fontSize:'11px',letterSpacing:'0.3em',textTransform:'uppercase',display:'inline-flex',alignItems:'center',gap:'16px',borderRadius:'2px',textDecoration:'none',fontWeight:700,boxShadow:'0 8px 32px rgba(197,152,129,0.3)'}}>
+            <div className="mx-auto lg:mx-0">
+              <a href="#diagnostico" className="btn-premium px-8 py-5 lg:px-12 lg:py-6 text-[10px] lg:text-[11px] tracking-[0.2em] uppercase inline-flex items-center gap-4 rounded-sm font-bold shadow-xl no-underline">
                 {t.hero.btn} <Icon.ArrowRight size={14}/>
               </a>
             </div>
           </div>
 
           {/* Hero Visual */}
-          <div style={{display:'flex',justifyContent:'center'}}>
-            <div className="venus-frame" style={{width:'100%',maxWidth:'460px',overflow:'hidden',boxShadow:'0 40px 100px rgba(197,152,129,0.25)',border:'12px solid white',position:'relative',background:'linear-gradient(160deg, #C59881 0%, #D4A896 20%, #E8C5B0 40%, #8FA899 65%, #4A634D 85%, #2C3E30 100%)'}}>
-            <img src={images[index]} alt="hero" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 1s ease' }}/>			  
-			  {/* Decorative overlay text */}
-              <div style={{position:'absolute',inset:0,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'40px',textAlign:'center'}}>
-                <MainLogo size={90} showText={false}/>
-                <div style={{marginTop:'20px',color:'white',fontFamily:"'Playfair Display',serif",fontSize:'1.5rem',fontStyle:'italic',opacity:0.9}}>Cabelos com Amor</div>
-                <div style={{marginTop:'8px',color:'rgba(255,255,255,0.7)',fontSize:'9px',letterSpacing:'0.4em',textTransform:'uppercase',fontWeight:700}}>Haskell Atelier</div>
-                <div style={{marginTop:'32px',width:'40px',height:'1px',background:'rgba(255,255,255,0.4)'}}/>
-                <div style={{marginTop:'20px',color:'rgba(255,255,255,0.6)',fontSize:'11px',letterSpacing:'0.2em',textTransform:'uppercase',fontWeight:600}}>Diagnóstico Personalizado</div>
+          <div className="flex justify-center w-full mt-8 lg:mt-0">
+            <div className="venus-frame w-full max-w-[320px] sm:max-w-[380px] lg:max-w-[460px] overflow-hidden relative bg-gradient-to-br from-bronze via-[#E8C5B0] to-sage shadow-2xl border-8 lg:border-[12px] border-white">
+              <img src={images[index]} alt="hero" className="w-full h-full object-cover transition-opacity duration-1000 ease-in-out"/>			  
+              {/* Decorative overlay text */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 lg:p-10 text-center bg-black/10">
+                <MainLogo size={70} showText={false}/>
+                <div className="mt-5 text-white font-serif text-xl lg:text-2xl italic opacity-90 drop-shadow-md">Cabelos com Amor</div>
+                <div className="mt-2 text-white/80 text-[8px] lg:text-[9px] tracking-[0.4em] uppercase font-bold drop-shadow-md">Haskell Atelier</div>
+                <div className="mt-6 w-8 h-px bg-white/40"/>
+                <div className="mt-4 text-white/70 text-[9px] lg:text-[10px] tracking-[0.2em] uppercase font-semibold">Diagnóstico Personalizado</div>
               </div>
             </div>
           </div>
@@ -398,21 +426,26 @@ const App = () => {
       </section>
 
       {/* ======= LEGACY ======= */}
-      <section id="legado" style={{padding:'128px 0',background:'white'}}>
-        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px'}}>
-          <div style={{display:'grid',gridTemplateColumns:'5fr 7fr',gap:'80px',alignItems:'start'}}>
-            <div style={{position:'sticky',top:'160px'}}>
-              <Icon.Eye size={40} style={{color:'#C59881',marginBottom:'32px'}}/>
-              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'3rem',lineHeight:1.1,marginBottom:'24px'}}>
-                Hair <br/><span style={{fontStyle:'italic'}}>Intellectualism</span>
+      <section id="legado" className="py-20 lg:py-32 bg-white relative">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+            <div className="lg:col-span-5 lg:sticky lg:top-40 text-center lg:text-left">
+              <div className="flex justify-center lg:justify-start">
+                <Icon.Eye size={40} className="text-bronze mb-6 lg:mb-8"/>
+              </div>
+              <h2 className="font-serif text-4xl lg:text-5xl leading-tight mb-4 lg:mb-6 text-dark">
+                Hair <br className="hidden lg:block"/><span className="italic">Intellectualism</span>
               </h2>
-              <p style={{fontSize:'10px',letterSpacing:'0.4em',textTransform:'uppercase',color:'#9ca3af',fontWeight:800,marginBottom:'32px'}}>{t.legacy.tag}</p>
-              <p style={{color:'#6b7280',fontWeight:300,lineHeight:1.8,fontSize:'1.25rem',fontStyle:'italic',maxWidth:'340px'}}>{t.legacy.quote}</p>
+              <p className="text-[9px] lg:text-[10px] tracking-[0.3em] uppercase text-gray-400 font-bold mb-6 lg:mb-8">{t.legacy.tag}</p>
+              <p className="text-gray-500 font-light leading-relaxed text-lg lg:text-xl italic max-w-sm mx-auto lg:mx-0">{t.legacy.quote}</p>
             </div>
-            <div style={{display:'flex',flexDirection:'column',gap:'48px'}}>
-              <p style={{color:'#4b5563',fontWeight:300,lineHeight:2,fontSize:'1.125rem'}}>{t.legacy.p1}</p>
-              <div style={{position:'relative',padding:'64px 48px',background:'#F9F6F2',borderRadius:'2px',overflow:'hidden'}}>
-                <blockquote style={{fontFamily:"'Playfair Display',serif",fontStyle:'italic',fontSize:'1.75rem',color:'#2C2C2C',lineHeight:1.4}}>
+            <div className="lg:col-span-7 flex flex-col gap-10 lg:gap-12">
+              <p className="text-gray-600 font-light leading-loose text-base lg:text-lg">
+                <span className="float-left text-6xl lg:text-8xl font-serif text-bronze mr-4 lg:mr-6 leading-none mt-2">{t.legacy.p1.charAt(0)}</span>
+                {t.legacy.p1.slice(1)}
+              </p>
+              <div className="relative p-8 lg:p-16 bg-sand rounded-sm overflow-hidden">
+                <blockquote className="relative z-10 font-serif italic text-2xl lg:text-3xl text-dark leading-snug">
                   {t.legacy.bq}
                 </blockquote>
               </div>
@@ -422,82 +455,92 @@ const App = () => {
       </section>
 
       {/* ======= HAIR SPA ======= */}
-      <section id="hairspa" style={{padding:'128px 0',background:'#F9F6F2'}}>
-        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px'}}>
-          <div style={{maxWidth:'720px',margin:'0 auto',textAlign:'center',marginBottom:'96px'}}>
-            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'3rem',marginBottom:'24px',lineHeight:1.1}}>
-              {t.spa.t1} <span style={{fontStyle:'italic'}}>{t.spa.t2}</span> {t.spa.t3}
+      <section id="hairspa" className="py-20 lg:py-32 bg-sand">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center mb-16 lg:mb-24">
+            <h2 className="font-serif text-4xl lg:text-5xl mb-6 leading-tight text-dark">
+              {t.spa.t1} <span className="italic">{t.spa.t2}</span> {t.spa.t3}
             </h2>
-            <div style={{width:'64px',height:'2px',background:'#C59881',margin:'0 auto 24px'}}/>
-            <p style={{fontSize:'11px',letterSpacing:'0.5em',textTransform:'uppercase',color:'#9ca3af',fontWeight:700}}>{t.spa.tag}</p>
+            <div className="w-12 lg:w-16 h-[2px] bg-bronze mx-auto mb-6"/>
+            <p className="text-[9px] lg:text-[10px] tracking-[0.4em] uppercase text-gray-400 font-bold">{t.spa.tag}</p>
           </div>
 
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'40px'}}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
             {[
-              { icon: <Icon.Zap size={40}/>, color:'#4A634D', bgColor:'rgba(74,99,77,0.06)', title: t.spa.c1t, tag: t.spa.c1tag, desc: t.spa.c1d },
-              { icon: <Icon.Droplets size={40}/>, color:'#C59881', bgColor:'rgba(197,152,129,0.06)', title: t.spa.c2t, tag: t.spa.c2tag, desc: t.spa.c2d },
-              { icon: <Icon.Sparkle size={40}/>, color:'#9ca3af', bgColor:'rgba(156,163,175,0.06)', title: t.spa.c3t, tag: t.spa.c3tag, desc: t.spa.c3d },
-            ].map((card,i)=>(
-              <div key={i} style={{background:'white',padding:'48px',boxShadow:'0 1px 3px rgba(0,0,0,0.05)',border:'1px solid #f3f4f6',borderRadius:'2px',display:'flex',flexDirection:'column',alignItems:'center',textAlign:'center',transition:'all 0.3s',cursor:'default'}}
-                onMouseOver={e=>{e.currentTarget.style.boxShadow='0 20px 60px rgba(0,0,0,0.1)';}}
-                onMouseOut={e=>{e.currentTarget.style.boxShadow='0 1px 3px rgba(0,0,0,0.05)';}}>
-                <div style={{width:'96px',height:'96px',background:card.bgColor,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:'32px',color:card.color}}>{card.icon}</div>
-                <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:'1.5rem',marginBottom:'12px',textTransform:'uppercase',letterSpacing:'-0.02em'}}>{card.title}</h3>
-                <p style={{color:card.color,fontSize:'10px',letterSpacing:'0.4em',textTransform:'uppercase',marginBottom:'24px',fontWeight:700}}>{card.tag}</p>
-                <p style={{color:'#6b7280',fontSize:'14px',fontWeight:300,lineHeight:1.8}}>{card.desc}</p>
+              { icon: <Icon.Zap size={36}/>, color:'#4A634D', bgColor:'rgba(74,99,77,0.06)', title: t.spa.c1t, tag: t.spa.c1tag, desc: t.spa.c1d },
+              { icon: <Icon.Droplets size={36}/>, color:'#C59881', bgColor:'rgba(197,152,129,0.06)', title: t.spa.c2t, tag: t.spa.c2tag, desc: t.spa.c2d },
+              { icon: <Icon.Sparkle size={36}/>, color:'#9ca3af', bgColor:'rgba(156,163,175,0.06)', title: t.spa.c3t, tag: t.spa.c3tag, desc: t.spa.c3d },
+            ].map((card,i)=>{
+              const isSelected = selectedSpaItem === i;
+              return (
+              <div 
+                key={i} 
+                onClick={() => toggleSpaItem(i)}
+                className={`bg-white p-8 lg:p-12 shadow-sm border rounded-sm flex flex-col items-center text-center transition-all duration-300 cursor-pointer outline-none focus:outline-none ${isSelected ? 'shadow-[0_20px_40px_rgba(197,152,129,0.15)] border-bronze ring-2 ring-bronze/20 scale-[1.02]' : 'border-gray-100 hover:shadow-[0_20px_40px_rgba(197,152,129,0.15)] hover:border-bronze hover:ring-2 hover:ring-bronze/20'}`}>
+                <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-full flex items-center justify-center mb-6 lg:mb-8" style={{background:card.bgColor,color:card.color}}>{card.icon}</div>
+                <h3 className="font-serif text-xl lg:text-2xl mb-3 text-dark leading-tight uppercase">{card.title}</h3>
+                <p className="text-[9px] lg:text-[10px] tracking-[0.3em] uppercase mb-4 lg:mb-6 font-bold" style={{color:card.color}}>{card.tag}</p>
+                <p className="text-gray-500 text-sm lg:text-base font-light leading-relaxed">{card.desc}</p>
               </div>
-            ))}
+            )})}
           </div>
         </div>
       </section>
 
       {/* ======= MYSTERY KITS ======= */}
-      <section id="misterio" style={{padding:'128px 0',background:'white',overflow:'hidden'}}>
-        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px'}}>
-          <div style={{display:'grid',gridTemplateColumns:'6fr 6fr',gap:'96px',alignItems:'center'}}>
-            <div style={{display:'flex',flexDirection:'column',gap:'40px'}}>
-              <div>
-                <span style={{color:'#C59881',fontSize:'10px',letterSpacing:'0.5em',textTransform:'uppercase',fontWeight:700,display:'block',marginBottom:'16px'}}>{t.mystery.tag}</span>
-                <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(2.5rem,4vw,3.75rem)',lineHeight:1.1,marginBottom:'16px'}}>
-                  {t.mystery.t1}<br/><span style={{fontStyle:'italic',fontWeight:300}}>{t.mystery.t2}</span>
+      <section id="misterio" className="py-20 lg:py-32 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+            <div className="flex flex-col gap-10 lg:gap-12">
+              <div className="text-center lg:text-left">
+                <span className="text-bronze text-[9px] lg:text-[10px] tracking-[0.4em] uppercase font-bold block mb-4">{t.mystery.tag}</span>
+                <h2 className="font-serif text-4xl sm:text-5xl lg:text-[clamp(2.5rem,4vw,3.75rem)] leading-tight mb-4 lg:mb-6 text-dark">
+                  {t.mystery.t1}<br/><span className="italic font-light">{t.mystery.t2}</span>
                 </h2>
-                <p style={{color:'#6b7280',fontWeight:300,lineHeight:1.9,fontSize:'1.125rem'}}>{t.mystery.desc}</p>
+                <p className="text-gray-500 font-light leading-relaxed text-base lg:text-lg">{t.mystery.desc}</p>
               </div>
-              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'24px'}}>
-                <div style={{padding:'32px',background:'#F9F6F2',borderTop:'4px solid #C59881',cursor:'default',transition:'all 0.3s'}}
-                  onMouseOver={e=>{e.currentTarget.style.boxShadow='0 20px 40px rgba(0,0,0,0.08)';}}
-                  onMouseOut={e=>{e.currentTarget.style.boxShadow='none';}}>
-                  <Icon.Package size={32} style={{color:'#C59881',marginBottom:'16px'}}/>
-                  <h4 style={{fontFamily:"'Playfair Display',serif",fontSize:'1.25rem',marginBottom:'4px'}}>{t.mystery.box1}</h4>
-                  <p style={{fontSize:'9px',textTransform:'uppercase',letterSpacing:'0.2em',opacity:0.5,fontStyle:'italic',fontWeight:700}}>{t.mystery.box1tag}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="p-8 bg-sand border-t-4 border-bronze transition-shadow hover:shadow-xl text-center sm:text-left">
+                  <div className="flex justify-center sm:justify-start mb-4"><Icon.Package size={28} className="text-bronze"/></div>
+                  <h4 className="font-serif text-xl mb-1 text-dark">{t.mystery.box1}</h4>
+                  <p className="text-[8px] lg:text-[9px] uppercase tracking-widest opacity-60 italic font-bold">{t.mystery.box1tag}</p>
                 </div>
-                <div style={{padding:'32px',background:'#F9F6F2',borderTop:'4px solid #4A634D',cursor:'default',transition:'all 0.3s'}}
-                  onMouseOver={e=>{e.currentTarget.style.boxShadow='0 20px 40px rgba(0,0,0,0.08)';}}
-                  onMouseOut={e=>{e.currentTarget.style.boxShadow='none';}}>
-                  <Icon.Stars size={32} style={{color:'#4A634D',marginBottom:'16px'}}/>
-                  <h4 style={{fontFamily:"'Playfair Display',serif",fontSize:'1.25rem',marginBottom:'4px'}}>{t.mystery.box2}</h4>
-                  <p style={{fontSize:'9px',textTransform:'uppercase',letterSpacing:'0.2em',opacity:0.5,fontStyle:'italic',fontWeight:700}}>{t.mystery.box2tag}</p>
+                <div className="p-8 bg-sand border-t-4 border-sage transition-shadow hover:shadow-xl text-center sm:text-left">
+                  <div className="flex justify-center sm:justify-start mb-4"><Icon.Stars size={28} className="text-sage"/></div>
+                  <h4 className="font-serif text-xl mb-1 text-dark">{t.mystery.box2}</h4>
+                  <p className="text-[8px] lg:text-[9px] uppercase tracking-widest opacity-60 italic font-bold">{t.mystery.box2tag}</p>
                 </div>
               </div>
             </div>
 
-            <div style={{background:'rgba(249,246,242,0.6)',padding:'64px',borderRadius:'2px',border:'1px solid #f9fafb'}}>
-              <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:'1.875rem',marginBottom:'8px',lineHeight:1.2}}>{t.mystery.rTitle}</h3>
-              <p style={{color:'#9ca3af',fontSize:'14px',fontWeight:500,fontStyle:'italic',marginBottom:'40px'}}>{t.mystery.rDesc}</p>
-              <ul style={{listStyle:'none',display:'grid',gridTemplateColumns:'1fr 1fr',gap:'24px'}}>
-                {[
-                  [<Icon.Flower size={14}/>, t.mystery.items[0]],
-                  [<span style={{fontSize:'11px'}}>🧢</span>, t.mystery.items[1]],
-                  [<span style={{fontSize:'11px'}}>✂️</span>, t.mystery.items[2]],
-                  [<span style={{fontSize:'11px'}}>♻</span>, t.mystery.items[3]],
-                  [<span style={{fontSize:'11px'}}>💆</span>, t.mystery.items[4]],
-                  [<Icon.Pipette size={14}/>, t.mystery.items[5]],
-                ].map(([icon, label], i) => (
-                  <li key={i} style={{display:'flex',alignItems:'center',gap:'16px',cursor:'default',padding:'4px 0'}}>
-                    <div style={{padding:'10px',background:'white',borderRadius:'50%',color:'#C59881',boxShadow:'0 1px 4px rgba(0,0,0,0.06)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>{icon}</div>
-                    <span style={{fontSize:'10px',letterSpacing:'0.15em',textTransform:'uppercase',fontWeight:600,color:'#6b7280'}}>{label}</span>
-                  </li>
-                ))}
+            <div className="bg-sand/60 p-8 lg:p-16 rounded-sm border border-gray-50">
+              <h3 className="font-serif text-2xl lg:text-3xl mb-2 leading-tight text-center lg:text-left text-dark">{t.mystery.rTitle}</h3>
+              <p className="text-gray-500 text-sm font-medium italic mb-8 lg:mb-10 text-center lg:text-left">{t.mystery.rDesc}</p>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <li className="flex items-center gap-4 group cursor-default">
+                  <div className="p-2.5 bg-white rounded-full text-bronze shadow-sm transition-all group-hover:rotate-12"><Icon.Flower size={14} /></div>
+                  <span className="text-[9px] lg:text-[10px] tracking-widest uppercase font-semibold text-gray-500 transition-colors group-hover:text-black">{t.mystery.items[0]}</span>
+                </li>
+                <li className="flex items-center gap-4 group cursor-default">
+                  <div className="p-2.5 bg-white rounded-full text-bronze shadow-sm transition-all group-hover:scale-110"><Icon.Bonnet size={14} /></div>
+                  <span className="text-[9px] lg:text-[10px] tracking-widest uppercase font-semibold text-gray-500 transition-colors group-hover:text-black">{t.mystery.items[1]}</span>
+                </li>
+                <li className="flex items-center gap-4 group cursor-default">
+                  <div className="p-2.5 bg-white rounded-full text-bronze shadow-sm transition-all group-hover:-rotate-12"><Icon.BananaClip size={14} /></div>
+                  <span className="text-[9px] lg:text-[10px] tracking-widest uppercase font-semibold text-gray-500 transition-colors group-hover:text-black">{t.mystery.items[2]}</span>
+                </li>
+                <li className="flex items-center gap-4 group cursor-default">
+                  <div className="p-2.5 bg-white rounded-full text-bronze shadow-sm transition-all group-hover:translate-x-1"><Icon.Comb size={14} /></div>
+                  <span className="text-[9px] lg:text-[10px] tracking-widest uppercase font-semibold text-gray-500 transition-colors group-hover:text-black">{t.mystery.items[3]}</span>
+                </li>
+                <li className="flex items-center gap-4 group cursor-default">
+                  <div className="p-2.5 bg-white rounded-full text-bronze shadow-sm transition-all group-hover:animate-pulse"><Icon.ScalpMassager size={14} /></div>
+                  <span className="text-[9px] lg:text-[10px] tracking-widest uppercase font-semibold text-gray-500 transition-colors group-hover:text-black">{t.mystery.items[4]}</span>
+                </li>
+                <li className="flex items-center gap-4 group cursor-default">
+                  <div className="p-2.5 bg-white rounded-full text-bronze shadow-sm transition-all group-hover:translate-y-0.5"><Icon.Pipette size={14} /></div>
+                  <span className="text-[9px] lg:text-[10px] tracking-widest uppercase font-semibold text-gray-500 transition-colors group-hover:text-black">{t.mystery.items[5]}</span>
+                </li>
               </ul>
             </div>
           </div>
@@ -505,87 +548,86 @@ const App = () => {
       </section>
 
       {/* ======= DIAGNOSIS / FORM ======= */}
-      <section id="diagnostico" style={{padding:'128px 0',background:'#2C2C2C',color:'white',position:'relative',overflow:'hidden'}}>
-        {/* Bg decoration */}
-        <div style={{position:'absolute',top:'-20%',right:'-10%',width:'600px',height:'600px',borderRadius:'50%',background:'radial-gradient(circle, rgba(197,152,129,0.06) 0%, transparent 70%)',pointerEvents:'none'}}/>
+      <section id="diagnostico" className="py-20 lg:py-32 bg-[#2C2C2C] text-white relative overflow-hidden">
+        <div className="absolute top-[-10%] right-[-10%] w-[400px] h-[400px] lg:w-[600px] lg:h-[600px] rounded-full pointer-events-none" style={{background:'radial-gradient(circle, rgba(197,152,129,0.06) 0%, transparent 70%)'}}/>
         
-        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px',position:'relative',zIndex:1}}>
-          <div style={{maxWidth:'1100px',margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 1fr',gap:'96px',alignItems:'center'}}>
-            <div style={{display:'flex',flexDirection:'column',gap:'32px'}}>
-              <span style={{color:'#C59881',fontSize:'11px',letterSpacing:'0.6em',textTransform:'uppercase',fontWeight:700}}>{t.diag.tag}</span>
-              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(3rem,5vw,4.5rem)',lineHeight:1.05,fontStyle:'italic',margin:0}}>
-                {t.diag.t1}<br/><span style={{fontStyle:'normal'}}>{t.diag.t2}</span>
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+            <div className="flex flex-col gap-8 text-center lg:text-left">
+              <span className="text-bronze text-[9px] lg:text-[11px] tracking-[0.4em] lg:tracking-[0.6em] uppercase font-bold">{t.diag.tag}</span>
+              <h2 className="font-serif text-4xl sm:text-5xl lg:text-[clamp(3.5rem,5vw,4.5rem)] leading-tight italic m-0">
+                {t.diag.t1}<br/><span className="not-italic">{t.diag.t2}</span>
               </h2>
-              <p style={{color:'#9ca3af',fontWeight:300,lineHeight:1.9,fontSize:'1.25rem',maxWidth:'440px'}}>{t.diag.desc}</p>
-              <div style={{display:'flex',gap:'48px',opacity:0.25,paddingTop:'32px'}}>
-                {[[<Icon.Brain size={44}/>,t.diag.i1],[<Icon.History size={44}/>,t.diag.i2],[<Icon.User size={44}/>,t.diag.i3]].map(([icon,label],i)=>(
-                  <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'8px'}}>
+              <p className="text-gray-400 font-light leading-relaxed text-base lg:text-xl max-w-md mx-auto lg:mx-0">{t.diag.desc}</p>
+              
+              <div className="flex flex-wrap justify-center lg:justify-start gap-8 lg:gap-12 opacity-30 pt-6 lg:pt-8">
+                {[[<Icon.Brain size={36}/>,t.diag.i1],[<Icon.History size={36}/>,t.diag.i2],[<Icon.User size={36}/>,t.diag.i3]].map(([icon,label],i)=>(
+                  <div key={i} className="flex flex-col items-center gap-2">
                     {icon}
-                    <span style={{fontSize:'9px',textTransform:'uppercase',letterSpacing:'0.2em'}}>{label}</span>
+                    <span className="text-[8px] lg:text-[9px] uppercase tracking-widest">{label}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div style={{background:'white',padding:'64px',borderRadius:'2px',boxShadow:'0 40px 100px rgba(0,0,0,0.3)',color:'#2C2C2C'}}>
+            <div className="bg-white p-8 lg:p-14 rounded-sm shadow-2xl text-dark">
               {formStatus === 'success' ? (
-                <div style={{textAlign:'center',padding:'48px 0'}}>
-                  <Icon.Check size={48} style={{color:'#4A634D',margin:'0 auto 32px'}}/>
-                  <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:'2.5rem',marginBottom:'16px'}}>{t.diag.s1}</h3>
-                  <p style={{color:'#6b7280',marginBottom:'40px'}}>{t.diag.s2}</p>
-                  <button onClick={()=>setFormStatus('idle')} style={{color:'#C59881',textTransform:'uppercase',fontSize:'10px',fontWeight:700,letterSpacing:'0.15em',background:'none',border:'none',borderBottom:'1px solid #C59881',paddingBottom:'4px',cursor:'pointer'}}>{t.diag.s3}</button>
+                <div className="text-center py-12 lg:py-16">
+                  <div className="flex justify-center mb-6"><Icon.Check size={48} className="text-sage" /></div>
+                  <h3 className="font-serif text-3xl lg:text-4xl mb-4">{t.diag.s1}</h3>
+                  <p className="text-gray-500 mb-8">{t.diag.s2}</p>
+                  <button onClick={()=>setFormStatus('idle')} className="text-bronze uppercase text-[10px] font-bold tracking-widest bg-transparent border-b border-bronze pb-1 cursor-pointer">{t.diag.s3}</button>
                 </div>
                 ) : formStatus === 'error' ? (
-                <div style={{textAlign:'center',padding:'48px 0'}}>
-                <Icon.X size={48} style={{color:'#B91C1C',margin:'0 auto 32px'}}/>
-                <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:'2.5rem',marginBottom:'16px'}}>{t.diag.s4 || "Erro ao enviar"}</h3>
-                <p style={{color:'#6b7280',marginBottom:'40px'}}>{t.diag.s2}</p>
-                <button onClick={()=>setFormStatus('idle')}>{t.diag.s3}</button>
+                <div className="text-center py-12 lg:py-16">
+                  <div className="flex justify-center mb-6"><Icon.X size={48} className="text-red-700" /></div>
+                  <h3 className="font-serif text-3xl lg:text-4xl mb-4">{t.diag.s4 || "Erro ao enviar"}</h3>
+                  <p className="text-gray-500 mb-8">{t.diag.s2}</p>
+                  <button onClick={()=>setFormStatus('idle')} className="text-bronze uppercase text-[10px] font-bold tracking-widest bg-transparent border-b border-bronze pb-1 cursor-pointer">{t.diag.s3}</button>
                 </div>
                 ) : (
                 <>
-                  <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:'2rem',marginBottom:'48px',textAlign:'center'}}>{t.diag.formTitle}</h3>
-                  <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',gap:'32px'}}>
+                  <h3 className="font-serif text-2xl lg:text-3xl mb-8 lg:mb-12 text-center text-dark">{t.diag.formTitle}</h3>
+                  <form onSubmit={handleSubmit} className="flex flex-col gap-6 lg:gap-8">
                     {[
                       {label:t.diag.l1, type:'text', placeholder:t.diag.p1, name: t.diag.name1, id:t.diag.name1},
                       {label:t.diag.l2, type:'tel', placeholder:t.diag.p2, name: t.diag.name2, id:t.diag.name2},
                       {label:t.diag.l3, type:'email', placeholder:t.diag.p3, name: t.diag.name3, id:t.diag.name3}
-					  ].map((f,i)=>(
+                    ].map((f,i)=>(
                       <div key={i}>
-                        <label className="field-label">{f.label}</label>
+                        <label className="field-label" htmlFor={f.id}>{f.label}</label>
                         <input required type={f.type} placeholder={f.placeholder} className="input-field" id={f.id} name={f.name}/>
                       </div>
                     ))}
                     <div>
-                      <label htmlFor="hairType" className="field-label">{t.diag.l3}</label>
-                      <div style={{position:'relative'}}>
-                        <select className="input-field" id="hairType" name="hairType" >
+                      <label htmlFor="hairType" className="field-label">{t.diag.l4}</label>
+                      <div className="relative">
+                        <select className="input-field" id="hairType" name="hairType" required>
                           <option value="">{t.diag.o3_0}</option>
                           <option value="liso">{t.diag.o3_1}</option>
                           <option value="ondulado">{t.diag.o3_2}</option>
                           <option value="cacheado">{t.diag.o3_3}</option>
                           <option value="crespo">{t.diag.o3_4}</option>
                         </select>
-                        <div style={{position:'absolute',right:0,top:'50%',transform:'translateY(-50%)',pointerEvents:'none',color:'#d1d5db'}}><Icon.ChevronDown/></div>
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><Icon.ChevronDown/></div>
                       </div>
                     </div>
                     <div>
-                      <label htmlFor="ritualInterest" className="field-label">{t.diag.l4}</label>
-                      <div style={{position:'relative'}}>
-                        <select className="input-field" id="ritualInterest" name="ritualInterest">
+                      <label htmlFor="ritualInterest" className="field-label">{t.diag.l5}</label>
+                      <div className="relative">
+                        <select className="input-field" id="ritualInterest" name="ritualInterest" required>
                           <option value="spa_cachos_oleos">{t.diag.o4_1}</option>
                           <option value="spa_crescimento_forca">{t.diag.o4_2}</option>
                           <option value="spa_matizacao_loiras">{t.diag.o4_3}</option>
                           <option value="misterio_venus">{t.diag.o4_4}</option>
                           <option value="outro">{t.diag.o4_5}</option>
                         </select>
-                        <div style={{position:'absolute',right:0,top:'50%',transform:'translateY(-50%)',pointerEvents:'none',color:'#d1d5db'}}><Icon.ChevronDown/></div>
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><Icon.ChevronDown/></div>
                       </div>
                     </div>
-                    <button type="submit" disabled={formStatus==='submitting'} className="btn-premium" style={{width:'100%',padding:'22px',fontSize:'12px',letterSpacing:'0.4em',textTransform:'uppercase',border:'none',cursor:'pointer',borderRadius:'2px',fontWeight:700,marginTop:'8px'}}>
+                    <button type="submit" disabled={formStatus==='submitting'} className="btn-premium w-full mt-4 py-4 lg:py-5 text-[11px] lg:text-[12px] tracking-[0.3em] lg:tracking-[0.4em] uppercase border-none rounded-sm font-bold shadow-xl cursor-pointer">
                       {formStatus === 'submitting' ? '...' : t.diag.btn}
                     </button>
-					
                   </form>
                 </>
               )}
@@ -595,31 +637,30 @@ const App = () => {
       </section>
 
       {/* ======= ETHICS BAR ======= */}
-      <section style={{padding:'48px 0',background:'white',borderTop:'1px solid #f9fafb'}}>
-        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px',display:'flex',justifyContent:'center',gap:'64px',flexWrap:'wrap',opacity:0.5}}>
-          <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
-            <Icon.Leaf size={20} style={{color:'#4A634D'}}/>
-            <span style={{fontSize:'10px',letterSpacing:'0.3em',textTransform:'uppercase',fontWeight:700}}>{t.footer.vegan}</span>
+      <section className="py-10 lg:py-12 bg-white border-t border-gray-50">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-16 opacity-60">
+          <div className="flex items-center gap-3">
+            <Icon.Leaf size={18} className="text-sage" />
+            <span className="text-[9px] sm:text-[10px] tracking-[0.3em] uppercase font-bold text-dark">{t.footer.vegan}</span>
           </div>
-		
-          <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
-            <Icon.Paw size={20} style={{color:'#4A634D'}}/>
-            <span style={{fontSize:'10px',letterSpacing:'0.3em',textTransform:'uppercase',fontWeight:700}}>{t.footer.cruelty}</span>
+          <div className="flex items-center gap-3">
+            <Icon.Paw size={18} className="text-sage" />
+            <span className="text-[9px] sm:text-[10px] tracking-[0.3em] uppercase font-bold text-dark">{t.footer.cruelty}</span>
           </div>
         </div>
       </section>
 
       {/* ======= FOOTER ======= */}
-      <footer style={{padding:'96px 0',background:'white',borderTop:'1px solid #f9fafb'}}>
-        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 24px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'40px'}}>
-          <div style={{display:'flex',alignItems:'center',gap:'16px'}}>
-            <MainLogo size={80} showText={false}/>
+      <footer className="py-16 lg:py-24 bg-white border-t border-gray-50">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-10">
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <MainLogo size={70} showText={false}/>
             <div>
-              <div style={{fontFamily:"'Playfair Display',serif",fontSize:'1.875rem',fontWeight:700,marginBottom:'4px',letterSpacing:'-0.02em'}}>Cabelos com Amor</div>
-              <p style={{fontSize:'10px',letterSpacing:'0.2em',color:'#C59881',textTransform:'uppercase',fontWeight:800}}>{t.footer.sub}</p>
+              <div className="font-serif text-2xl lg:text-[1.875rem] font-bold mb-1 tracking-tight text-dark">Cabelos com Amor</div>
+              <p className="text-[8px] lg:text-[10px] tracking-[0.2em] text-bronze uppercase font-bold">{t.footer.sub}</p>
             </div>
           </div>
-          <div style={{fontSize:'11px',letterSpacing:'0.2em',color:'#d1d5db',textTransform:'uppercase',fontWeight:700,textAlign:'right'}}>
+          <div className="text-[9px] lg:text-[11px] tracking-[0.2em] text-gray-400 uppercase font-bold">
             © {new Date().getFullYear()} CABELO VÊNUS • TODOS OS DIREITOS RESERVADOS.
           </div>
         </div>
