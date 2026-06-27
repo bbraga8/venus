@@ -1,297 +1,1578 @@
-<!doctype html>
-<html lang="pt">
+<!DOCTYPE html>
+<html lang="pt-PT" class="scroll-smooth">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Cabelos com Amor — Haskell Atelier</title>
-  <style>
-    :root{--bg:#f6f1eb;--paper:#fffaf5;--text:#2d2320;--muted:#6e5d56;--bronze:#c59a7a;--bronze2:#b1846f;--line:rgba(45,35,32,.12);--shadow:0 18px 50px rgba(60,35,20,.08)}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#fbf7f2 0%,var(--bg) 100%);color:var(--text)}a{color:inherit;text-decoration:none}img{max-width:100%;display:block}
-    .wrap{width:min(1180px,calc(100% - 32px));margin:0 auto}.btn{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;border:1px solid var(--bronze);background:transparent;color:var(--bronze);padding:14px 22px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;border-radius:4px;cursor:pointer;transition:.25s}.btn:hover{background:var(--bronze);color:#fff}.btn.fill{background:var(--bronze);color:#fff}.btn.fill:hover{background:var(--bronze2);border-color:var(--bronze2)}.chip{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .8rem;border:1px solid var(--line);border-radius:999px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.4)}
-    header{position:sticky;top:0;z-index:30;background:rgba(251,247,242,.8);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0}.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.brand-mark{width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ead8cd,#b98970 72%,#8f6551 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}.nav-links{display:flex;align-items:center;gap:18px;flex-wrap:wrap}.nav-links a{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}.nav-actions{display:flex;align-items:center;gap:10px;position:relative}.menu-btn{display:none;background:none;border:1px solid var(--line);border-radius:10px;padding:10px;cursor:pointer}.dropdown{position:absolute;top:110%;right:0;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:12px;min-width:220px;display:none}.dropdown.open{display:block}.dropdown .item{display:block;padding:10px 12px;border-radius:10px;font-size:12px}.dropdown .item:hover{background:rgba(197,154,122,.12)}
-    .hero{padding:76px 0 36px}.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}.eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--bronze2);font-weight:700}.hero h1{margin:.35rem 0 0;font-size:clamp(3rem,7vw,5.8rem);line-height:.92;letter-spacing:-.04em}.hero p{max-width:58ch;color:var(--muted);font-size:1.03rem;line-height:1.8}.hero-card{position:relative;border-radius:28px;overflow:hidden;min-height:560px;background:linear-gradient(180deg,#f4e8dc 0%,#efe0d4 100%);box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.05)}.hero-art{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.25)}.art{background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(0,0,0,.03)),radial-gradient(circle at 30% 20%,rgba(255,255,255,.6),transparent 38%),linear-gradient(135deg,#d9c1b2,#faf4ef 55%,#c6a28f)}.overlay{position:absolute;inset:auto 0 0 0;padding:22px;background:linear-gradient(180deg,transparent,rgba(40,25,20,.55));color:#fff}.overlay strong{display:block;font-size:16px;margin-bottom:6px}.overlay span{font-size:13px;opacity:.92}
-    section{padding:34px 0}.section-title{margin:0 0 10px;font-size:clamp(2rem,4vw,3.2rem);line-height:1.02}.section-sub{margin:0 0 24px;color:var(--muted);max-width:70ch;line-height:1.8}.panel{background:rgba(255,255,255,.68);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow)}.pad{padding:28px}
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{border-radius:22px;background:var(--paper);border:1px solid var(--line);padding:22px;min-height:100%}.card h3{margin:0 0 8px;font-size:22px}.card .tag{color:var(--bronze2);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700}.card p{color:var(--muted);line-height:1.75}.icon{width:44px;height:44px;border-radius:14px;background:rgba(197,154,122,.14);display:grid;place-items:center;margin-bottom:14px;color:var(--bronze2);font-weight:800}
-    .split{display:grid;grid-template-columns:1fr .9fr;gap:20px;align-items:start}.list{display:grid;gap:12px}.list li{list-style:none;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.7);border:1px solid var(--line)}
-    form{display:grid;gap:14px}label{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}input,select,textarea{width:100%;padding:14px 15px;border-radius:14px;border:1px solid rgba(0,0,0,.14);background:#fff;font:inherit;color:var(--text)}textarea{min-height:110px;resize:vertical} .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.success{padding:18px;border-radius:18px;background:rgba(197,154,122,.14);border:1px solid rgba(197,154,122,.28)}
-    footer{padding:36px 0 50px;color:var(--muted)}.foot{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:18px}.small{font-size:12px;letter-spacing:.16em;text-transform:uppercase}.lang{display:flex;align-items:center;gap:8px}.lang button{border:none;background:transparent;cursor:pointer;color:var(--muted);font-weight:700;font-size:11px;letter-spacing:.18em}.lang button.active{color:var(--bronze2)}
-    .mobile-menu{display:none;padding:0 0 16px}.mobile-menu a{display:block;padding:12px 0;border-top:1px solid var(--line);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-    @media (max-width: 960px){.hero-grid,.split,.grid-3,.form-grid{grid-template-columns:1fr}.hero-card{min-height:420px}.nav-links,.nav-actions .desktop-only{display:none}.menu-btn{display:inline-flex}.mobile-menu.show{display:block}}
-  </style>
-</head>
-<body>
-  <header>
-    <div class="wrap">
-      <div class="nav">
-        <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span><span>Cabelos com Amor</span></a>
-        <nav class="nav-links desktop-only" aria-label="Principal">
-          <a href="#legado"><span data-i18n="nav.legacy">O Legado</span></a>
-          <a href="#hairspa"><span data-i18n="nav.spa">Hair Spa</span></a>
-          <a href="#misterio"><span data-i18n="nav.kits">Kits Mistério</span></a>
-          <a href="#diagnostico"><span data-i18n="nav.diag">Diagnóstico</span></a>
-          <a href="https://g51e1k-xt.myshopify.com/pages/contact" target="_blank" rel="noopener noreferrer">Shop</a>
-          <a href="#consultoria"><span data-i18n="nav.consult">Minha Consultoria</span></a>
-        </nav>
-        <div class="nav-actions">
-          <div class="lang desktop-only" aria-label="Idioma">
-            <button class="active" data-lang="pt">PT</button>
-            <button data-lang="en">EN</button>
-            <button data-lang="es">ES</button>
-          </div>
-          <button class="btn desktop-only" id="musicBtn" type="button">Soundscape</button>
-          <button class="menu-btn" id="menuBtn" type="button" aria-label="Abrir menu">☰</button>
-        </div>
-      </div>
-      <div class="mobile-menu" id="mobileMenu">
-        <a href="#legado"><span data-i18n="nav.legacy">O Legado</span></a>
-        <a href="#hairspa"><span data-i18n="nav.spa">Hair Spa</span></a>
-        <a href="#misterio"><span data-i18n="nav.kits">Kits Mistério</span></a>
-        <a href="#diagnostico"><span data-i18n="nav.diag">Diagnóstico</span></a>
-          <a href="https://g51e1k-xt.myshopify.com/pages/contact" target="_blank" rel="noopener noreferrer">Shop</a>
-        <a href="#consultoria"><span data-i18n="nav.consult">Minha Consultoria</span></a>
-      </div>
-    </div>
-  </header>
-
-  <main id="top">
-    <section class="hero">
-      <div class="wrap hero-grid">
-        <div>
-          <div class="eyebrow"><span data-i18n="hero.tag"><span data-i18n="diag.tag">Manifesto de Autonomia</span> Capilar</span></div>
-          <h1><span data-i18n="hero.title1">Cabelo Vênus:</span><br/><span data-i18n="hero.title2">A Moldura da Alma.</span></h1>
-          <p><span data-i18n="hero.desc">Na Cabelos com Amor, celebramos a beleza capilar em sua perfeição técnica e natural. Transforme o seu ritual diário numa experiência de alta performance com a nossa consultoria.</span></p>
-          <p><a class="btn fill" href="#diagnostico"><span data-i18n="hero.btn">Iniciar Consultoria</span></a></p>
-          <div class="chip"><span data-i18n="footer.vegan">100% Vegano</span></div> <div class="chip"><span data-i18n="footer.cruelty">Cruelty Free</span></div>
-        </div>
-        <div class="hero-card" aria-label="Galeria de imagens">
-          <div class="hero-art">
-			<div class="art"><br><img src="https://cdn.cabelovenus.com/img/1.png" alt="1" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;"></div>
-			<div class="art"><br><img src="https://cdn.cabelovenus.com/img/2.png" alt="1" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;"></div>
-			<div class="art"><br><img src="https://cdn.cabelovenus.com/img/3.png" alt="1" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;"></div>
-			<div class="art"><br><img src="https://cdn.cabelovenus.com/img/4.png" alt="1" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;"></div>          </div>
-          <div class="overlay">
-            <strong><span data-i18n="hero.loading">Capturando retratos de beleza...</span></strong>
-            <span>Fotografia espontânea, luz suave e ritual capilar de alta performance.</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="legado">
-      <div class="wrap panel pad">
-        <div class="eyebrow"><span data-i18n="legacy.tag">Conhecimento que Transcende</span></div>
-        <h2 class="section-title">Hair Intellectualism</h2>
-        <p class="section-sub"><span data-i18n="legacy.quote">"A história do cuidado não está nos rótulos, mas no toque consciente de quem domina a própria estética."</span></p>
-        <p class="section-sub"><span data-i18n="legacy.p1">Cuidar do seu cabelo é um exercício de soberania técnica. No nosso Atelier, validamos essa magia ancestral com a precisão da ciência botânica moderna. Através da análise de porosidade e percepção tátil, consultamos protocolos que respeitam a sua biologia única.</span></p>
-        <p class="section-sub"><span data-i18n="legacy.bq">"A Gestalt do Cuidado: Onde a autonomia tátil encontra a excelência Haskell para revelar a sua versão mais autêntica."</span></p>
-      </div>
-    </section>
-
-    <section id="hairspa">
-      <div class="wrap">
-        <h2 class="section-title">O Seu <span data-i18n="nav.spa">Hair Spa</span> Particular</h2>
-        <p class="section-sub"><span data-i18n="spa.tag">Consultoria em Fórmulas Nobres.</span></p>
-        <div class="grid-3">
-          <article class="card"><div class="icon">◆</div><div class="tag"><span data-i18n="spa.c1tag">Crescimento & Vigor</span></div><h3><span data-i18n="spa.c1title">Coleção Cavalo Forte</span></h3><p><span data-i18n="spa.c1desc">Através dos ativos Biotina, Pantenol e Queratina, esta coleção age diretamente na estrutura do fio, promovendo força, reconstrução e hidratação intensa.</span></p></article>
-          <article class="card"><div class="icon">◌</div><div class="tag"><span data-i18n="spa.c2tag">Nutrição Lipídica</span></div><h3><span data-i18n="spa.c2title">Sinfonia de Óleos</span></h3><p><span data-i18n="spa.c2desc">Estruturação de cachos com Manteiga de Murumuru e Seiva Nutritiva. Óleos de Marula, Argan e Monoi garantem hidratação, brilho e restauração da fibra com proteção antioxidante.</span></p></article>
-          <article class="card"><div class="icon">✦</div><div class="tag"><span data-i18n="spa.c3tag">Matização Técnica</span></div><h3><span data-i18n="spa.c3title">Loiras de Luxo</span></h3><p><span data-i18n="spa.c3desc">A combinação sinérgica do Complexo de Proteínas com o Vinagre Balsâmico cria um tratamento de dupla ação: proteínas reconstroem a massa interna e o vinagre sela as cutículas.</span></p></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="misterio">
-      <div class="wrap split">
-        <div class="panel pad">
-          <div class="eyebrow"><span data-i18n="mystery.tag">Atelier de Consultoria</span></div>
-          <h2 class="section-title"><span data-i18n="mystery.title">O Mistério da Caixa Consultoria.</span></h2>
-          <p class="section-sub"><span data-i18n="mystery.desc">Seleções personalizadas para o seu ritual capilar diário, baseadas no seu diagnóstico técnico.</span></p>
-          <div class="grid-3" style="grid-template-columns:1fr 1fr;gap:14px">
-            <div class="card"><div class="tag"><span data-i18n="mystery.box1tag">Experiência Essencial</span></div><h3><span data-i18n="mystery.box1">Caixa Vênus</span></h3></div>
-            <div class="card"><div class="tag"><span data-i18n="mystery.box2tag">Consultoria Técnica</span></div><h3><span data-i18n="mystery.box2">Kit Atelier</span></h3></div>
-          </div>
-        </div>
-        <div class="panel pad">
-          <h3 style="margin-top:0"><span data-i18n="mystery.rightTitle">Cada caixa é única</span></h3>
-          <p class="section-sub"><span data-i18n="mystery.rightDesc">Nada aqui é aleatório: sua caixa pode incluir acessórios escolhidos especialmente para você.</span></p>
-          <ul class="list">
-            <li data-i18n="mystery.item0">Scrunchies Seda</li>
-            <li data-i18n="mystery.item1">Touca de Cetim</li>
-            <li data-i18n="mystery.item2">Presilhas</li>
-            <li data-i18n="mystery.item3">Pentes Bambu</li>
-            <li data-i18n="mystery.item4">Massageador</li>
-            <li data-i18n="mystery.item5">Aplicador Óleo</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section id="diagnostico">
-      <div class="wrap panel pad">
-        <div class="eyebrow"><span data-i18n="diag.tag">Manifesto de Autonomia</span></div>
-        <h2 class="section-title">O <span data-i18n="nav.diag">Diagnóstico</span> Particular.</h2>
-        <p class="section-sub"><span data-i18n="diag.desc">Não somos um marketplace; somos a sua bússola capilar. Deixe a Cabelos com Amor curar a sua próxima experiência sensorial em casa.</span></p>
-        <div class="grid-3" style="margin-bottom:18px">
-          <div class="card"><h3><span data-i18n="diag.i1full">1. Análise</span></h3><p>Identifique o seu tipo de fio e o ritual de interesse.</p></div>
-          <div class="card"><h3><span data-i18n="diag.i2full">2. Histórico</span></h3><p>Registe as necessidades e os hábitos da rotina capilar.</p></div>
-          <div class="card"><h3><span data-i18n="diag.i3full">3. Individual</span></h3><p>Receba uma recomendação sob medida para si.</p></div>
-        </div>
-        <div id="consultoria" class="split">
-          <div class="card">
-            <h3 style="margin-top:0"><span data-i18n="diag.formTitle">Marcar Consultoria</span></h3>
-            <form id="consultForm">
-              <div>
-                <label for="name"><span data-i18n="diag.l1">Como deseja ser chamada?</span></label>
-                <input id="name" name="name" placeholder="Ex: Maria Vênus" data-i18n-placeholder="diag.p1" />
-              </div>
-              <div>
-                <label for="whatsapp"><span data-i18n="diag.l2">WhatsApp para Consultoria</span></label>
-                <input id="whatsapp" name="whatsapp" placeholder="+351 000 000 000" data-i18n-placeholder="diag.p2" />
-              </div>
-              <div class="form-grid">
-                <div>
-                  <label for="hairType"><span data-i18n="diag.l3">Tipo de Cabelo</span></label>
-                  <select id="hairType" name="hairType">
-                    <option data-i18n="diag.o30">Selecione...</option><option data-i18n="diag.o31">Liso</option><option data-i18n="diag.o32">Ondulado</option><option data-i18n="diag.o33">Cacheado</option><option data-i18n="diag.o34">Crespo</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="ritual"><span data-i18n="diag.l4">Ritual de Interesse</span></label>
-                  <select id="ritual" name="ritual">
-                    <option data-i18n="diag.o41">Consultoria Home Spa (Cachos & Óleos)</option>
-                    <option data-i18n="diag.o42">Consultoria Home Spa (Crescimento & Força)</option>
-                    <option data-i18n="diag.o43">Consultoria Home Spa (Matização Loiras)</option>
-                    <option data-i18n="diag.o44">Caixa Mistério Vênus</option>
-                    <option data-i18n="diag.o45">Outro Desafio Capilar</option>
-                  </select>
-                </div>
-              </div>
-              <button class="btn fill" type="submit">Solicitar meu <span data-i18n="nav.diag">Diagnóstico</span></button>
-            </form>
-            <div id="formSuccess" class="success" style="display:none;margin-top:14px">
-              <strong><span data-i18n="diag.success1">Pedido Enviado</span></strong>
-              <p style="margin:8px 0 0;color:var(--muted)"><span data-i18n="diag.success2">Entraremos em contacto via WhatsApp em breve para a sua consultoria.</span></p>
-            </div>
-          </div>
-          <div class="card">
-            <h3 style="margin-top:0">Compromisso Ético</h3>
-            <p class="section-sub">Especialistas em <span data-i18n="nav.diag">Diagnóstico</span>s Capilares Personalizados.</p>
-            <div class="chip"><span data-i18n="footer.vegan">100% Vegano</span></div> <div class="chip"><span data-i18n="footer.cruelty">Cruelty Free</span></div>
-            <p style="margin-top:18px" class="small">© 2026 CABELO VÊNUS • TODOS OS DIREITOS RESERVADOS.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="wrap foot">
-      <div class="brand" style="gap:10px"><span class="brand-mark" aria-hidden="true"></span><span>Cabelos com Amor</span></div>
-      <div class="small">Especialistas em <span data-i18n="nav.diag">Diagnóstico</span>s Capilares Personalizados</div>
-      <div class="small">© 2026 CABELO VÊNUS • TODOS OS DIREITOS RESERVADOS.</div>
-    </div>
-  </footer>
-
-  <script>
-    const menuBtn = document.getElementById('menuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    menuBtn?.addEventListener('click', () => mobileMenu.classList.toggle('show'));
-    document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('show')));
-    const consultForm = document.getElementById('consultForm');
-    const formSuccess = document.getElementById('formSuccess');
-    consultForm?.addEventListener('submit', (e) => { e.preventDefault(); formSuccess.style.display = 'block'; consultForm.reset(); });
-    const langButtons = document.querySelectorAll('.lang button');
-    langButtons.forEach(btn => btn.addEventListener('click', () => { langButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); }));
-    const musicBtn = document.getElementById('musicBtn');
-    let playing = false;
-    let audioCtx = null;
-    let gain = null;
-    let osc1 = null, osc2 = null, osc3 = null, osc3Gain = null;
-    musicBtn?.addEventListener('click', async () => {
-      if (!playing) {
-        const AC = window.AudioContext || window.webkitAudioContext;
-        audioCtx = new AC();
-        gain = audioCtx.createGain();
-        gain.gain.setValueAtTime(0, audioCtx.currentTime);
-        gain.gain.setTargetAtTime(0.08, audioCtx.currentTime, 2);
-        gain.connect(audioCtx.destination);
-        osc1 = audioCtx.createOscillator(); osc1.type = 'sine'; osc1.frequency.setValueAtTime(432, audioCtx.currentTime); osc1.connect(gain); osc1.start();
-        osc2 = audioCtx.createOscillator(); osc2.type = 'sine'; osc2.frequency.setValueAtTime(436, audioCtx.currentTime); osc2.connect(gain); osc2.start();
-        osc3 = audioCtx.createOscillator(); osc3.type = 'triangle'; osc3.frequency.setValueAtTime(216, audioCtx.currentTime); osc3Gain = audioCtx.createGain(); osc3Gain.gain.setValueAtTime(0.05, audioCtx.currentTime); osc3.connect(osc3Gain); osc3Gain.connect(gain); osc3.start();
-        musicBtn.textContent = 'Pause';
-        playing = true;
-      } else {
-        if (gain && audioCtx) {
-          gain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.5);
-          setTimeout(() => { try { osc1?.stop(); osc2?.stop(); osc3?.stop(); audioCtx?.close(); } catch(e) {} }, 700);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cabelo Venus | Coral C — Premium E-Commerce & Scalp Care</title>
+    <!-- Google Fonts: Playfair Display & Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coral: {
+                            DEFAULT: '#FF7F6A',
+                            dark: '#E2634F',
+                            light: '#FFECE9',
+                        },
+                        celeste: {
+                            DEFAULT: '#A9D8F3',
+                            dark: '#7FBEE0',
+                            light: '#EBF6FC',
+                        },
+                        perola: {
+                            DEFAULT: '#F7F5F2',
+                            dark: '#EBE7E1',
+                        },
+                        dourado: {
+                            DEFAULT: '#D8B77A',
+                            dark: '#C49F5E',
+                            light: '#F4ECD9',
+                        },
+                        nevoa: {
+                            DEFAULT: '#D9D9D9',
+                            dark: '#B5B5B5',
+                        },
+                        darklux: '#2C1E1B',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Montserrat"', 'sans-serif'],
+                    }
+                }
+            }
         }
-        musicBtn.textContent = 'Soundscape';
-        playing = false;
-      }
-    });
-  </script>
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F7F5F2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D8B77A;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF7F6A;
+        }
+        .text-glow {
+            text-shadow: 0 0 20px rgba(216, 183, 122, 0.2);
+        }
+        @keyframes subtle-shake {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .cta-pulse {
+            animation: subtle-shake 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-perola font-sans text-darklux antialiased overflow-x-hidden pb-20 sm:pb-0">
 
-  <script>
-    const translations = {
-      pt: {
-        nav:{legacy:'O Legado',spa:'Hair Spa',kits:'Kits Mistério',diag:'Diagnóstico',consult:'Minha Consultoria'},
-        hero:{tag:'Manifesto de Autonomia Capilar',title1:'Cabelo Vênus:',title2:'A Moldura da Alma.',desc:'Na Cabelos com Amor, celebramos a beleza capilar em sua perfeição técnica e natural. Transforme o seu ritual diário numa experiência de alta performance com a nossa consultoria.',btn:'Iniciar Consultoria',loading:'Capturando retratos de beleza...'},
-        legacy:{tag:'Conhecimento que Transcende',quote:'"A história do cuidado não está nos rótulos, mas no toque consciente de quem domina a própria estética."',p1:'Cuidar do seu cabelo é um exercício de soberania técnica. No nosso Atelier, validamos essa magia ancestral com a precisão da ciência botânica moderna. Através da análise de porosidade e percepção tátil, consultamos protocolos que respeitam a sua biologia única.',bq:'"A Gestalt do Cuidado: Onde a autonomia tátil encontra a excelência Haskell para revelar a sua versão mais autêntica."'},
-        spa:{title:'O Seu Hair Spa Particular',tag:'Consultoria em Fórmulas Nobres.',c1title:'Coleção Cavalo Forte',c1tag:'Crescimento & Vigor',c1desc:'Através dos ativos Biotina, Pantenol e Queratina, esta coleção age diretamente na estrutura do fio, promovendo força, reconstrução e hidratação intensa.',c2title:'Sinfonia de Óleos',c2tag:'Nutrição Lipídica',c2desc:'Estruturação de cachos com Manteiga de Murumuru e Seiva Nutritiva. Óleos de Marula, Argan e Monoi garantem hidratação, brilho e restauração da fibra com proteção antioxidante.',c3title:'Loiras de Luxo',c3tag:'Matização Técnica',c3desc:'A combinação sinérgica do Complexo de Proteínas com o Vinagre Balsâmico cria um tratamento de dupla ação: proteínas reconstroem a massa interna e o vinagre sela as cutículas.'},
-        mystery:{tag:'Atelier de Consultoria',title:'O Mistério da Caixa Consultoria.',desc:'Seleções personalizadas para o seu ritual capilar diário, baseadas no seu diagnóstico técnico.',box1:'Caixa Vênus',box1tag:'Experiência Essencial',box2:'Kit Atelier',box2tag:'Consultoria Técnica',rightTitle:'Cada caixa é única',rightDesc:'Nada aqui é aleatório: sua caixa pode incluir acessórios escolhidos especialmente para você.',item0:'Scrunchies Seda',item1:'Touca de Cetim',item2:'Presilhas',item3:'Pentes Bambu',item4:'Massageador',item5:'Aplicador Óleo'},
-        diag:{tag:'Manifesto de Autonomia',title:'O Diagnóstico Particular.',desc:'Não somos um marketplace; somos a sua bússola capilar. Deixe a Cabelos com Amor curar a sua próxima experiência sensorial em casa.',i1full:'1. Análise',i2full:'2. Histórico',i3full:'3. Individual',formTitle:'Marcar Consultoria',l1:'Como deseja ser chamada?',l2:'WhatsApp para Consultoria',l3:'Tipo de Cabelo',l4:'Ritual de Interesse',p1:'Ex: Maria Vênus',p2:'+351 000 000 000',o30:'Selecione...',o31:'Liso',o32:'Ondulado',o33:'Cacheado',o34:'Crespo',o41:'Consultoria Home Spa (Cachos & Óleos)',o42:'Consultoria Home Spa (Crescimento & Força)',o43:'Consultoria Home Spa (Matização Loiras)',o44:'Caixa Mistério Vênus',o45:'Outro Desafio Capilar',btn:'Solicitar meu Diagnóstico',success1:'Pedido Enviado',success2:'Entraremos em contacto via WhatsApp em breve para a sua consultoria.'},
-        footer:{vegan:'100% Vegano',cruelty:'Cruelty Free',sub:'Especialistas em Diagnósticos Capilares Personalizados.'}
-      },
-      en: {
-        nav:{legacy:'The Legacy',spa:'Hair Spa',kits:'Mystery Kits',diag:'Diagnosis',consult:'My Consultation'},
-        hero:{tag:'Hair Autonomy Manifesto',title1:'Venus Hair:',title2:'The Frame of the Soul.',desc:'At Cabelos com Amor, we celebrate hair beauty in its technical and natural perfection. Transform your daily ritual into a high-performance experience with our consultation.',btn:'Start Consultation',loading:'Capturing beauty portraits...'},
-        legacy:{tag:'Transcending Knowledge',quote:'"The history of care is not in the labels, but in the conscious touch of those who master their own aesthetics."',p1:'Caring for your hair is an exercise in technical sovereignty. In our Atelier, we validate this ancestral magic with the precision of modern botanical science. Through porosity analysis and tactile perception, we consult on protocols that respect your unique biology.',bq:'"The Gestalt of Care: Where tactile autonomy meets Haskell excellence to reveal your most authentic self."'},
-        spa:{title:'Your Private Hair Spa',tag:'Noble Formulas Consultation.',c1title:'Strong Horse Collection',c1tag:'Growth & Vigor',c1desc:'Through Biotin, Panthenol, and Keratin, this collection acts directly on the hair structure, promoting strength, reconstruction, and intense hydration.',c2title:'Symphony of Oils',c2tag:'Lipid Nutrition',c2desc:'Curl structuring with Murumuru Butter and Nutritive Sap. Marula, Argan, and Monoi oils guarantee hydration, shine, and fiber restoration with antioxidant protection.',c3title:'Luxury Blondes',c3tag:'Technical Matting',c3desc:'The synergistic combination of Protein Complex and Balsamic Vinegar creates a dual-action treatment: proteins rebuild the internal mass and vinegar seals the cuticles.'},
-        mystery:{tag:'Consultation Atelier',title:'The Mystery of the Consultation Box.',desc:'Personalized selections for your daily hair ritual, based on your technical diagnosis.',box1:'Venus Box',box1tag:'Essential Experience',box2:'Atelier Kit',box2tag:'Technical Consultation',rightTitle:'Every box is unique',rightDesc:'Nothing here is random: your box may include accessories chosen especially for you.',item0:'Silk Scrunchies',item1:'Satin Bonnet',item2:'Hair Clips',item3:'Bamboo Combs',item4:'Scalp Massager',item5:'Oil Applicator'},
-        diag:{tag:'Autonomy Manifesto',title:'The Private Diagnosis.',desc:'We are not a marketplace; we are your hair compass. Let Cabelos com Amor curate your next sensory experience at home.',i1full:'1. Analysis',i2full:'2. History',i3full:'3. Individual',formTitle:'Book Consultation',l1:'How would you like to be called?',l2:'WhatsApp for Consultation',l3:'Hair Type',l4:'Ritual of Interest',p1:'Ex: Maria Venus',p2:'+1 000 000 0000',o30:'Select...',o31:'Straight',o32:'Wavy',o33:'Curly',o34:'Coily',o41:'Home Spa Consultation (Curls & Oils)',o42:'Home Spa Consultation (Growth & Strength)',o43:'Home Spa Consultation (Blonde Matting)',o44:'Venus Mystery Box',o45:'Other Hair Challenge',btn:'Request my Diagnosis',success1:'Request Sent',success2:'We will contact you via WhatsApp shortly for your consultation.'},
-        footer:{vegan:'100% Vegan',cruelty:'Cruelty Free',sub:'Specialists in Personalized Hair Diagnoses.'}
-      },
-      es: {
-        nav:{legacy:'El Legado',spa:'Hair Spa',kits:'Kits Misterio',diag:'Diagnóstico',consult:'Mi Consultoría'},
-        hero:{tag:'Manifiesto de Autonomía Capilar',title1:'Cabello Venus:',title2:'El Marco del Alma.',desc:'En Cabelos com Amor, celebramos la belleza capilar en su perfección técnica y natural. Transforma tu ritual diario en una experiencia de alto rendimiento con nuestra consultoría.',btn:'Iniciar Consultoría',loading:'Capturando retratos de belleza...'},
-        legacy:{tag:'Conocimiento que Trasciende',quote:'"La historia del cuidado no está en las etiquetas, sino en el toque consciente de quien domina su propia estética."',p1:'Cuidar de tu cabello es un ejercicio de soberanía técnica. En nuestro Atelier, validamos esta magia ancestral con la precisión de la ciencia botánica moderna. A través del análisis de porosidad y percepción táctil, consultamos protocolos que respetan tu biología única.',bq:'"La Gestalt del Cuidado: Donde la autonomía táctil se encuentra con la excelencia Haskell para revelar tu versión más auténtica."'},
-        spa:{title:'Tu Hair Spa Particular',tag:'Consultoría en Fórmulas Nobles.',c1title:'Colección Caballo Fuerte',c1tag:'Crecimiento & Vigor',c1desc:'A través de los activos Biotina, Pantenol y Queratina, esta colección actúa directamente en la estructura del cabello, promoviendo fuerza, reconstrucción e hidratación intensa.',c2title:'Sinfonía de Aceites',c2tag:'Nutrición Lipídica',c2desc:'Estructuración de rizos con Manteca de Murumuru y Savia Nutritiva. Los aceites de Marula, Argán y Monoi garantizan hidratación, brillo y restauración de la fibra con protección antioxidante.',c3title:'Rubias de Lujo',c3tag:'Matización Técnica',c3desc:'La combinación sinérgica del Complejo de Proteínas con el Vinagre Balsámico crea un tratamiento de doble acción: las proteínas reconstruyen la masa interna y el vinagre sella las cutículas.'},
-        mystery:{tag:'Atelier de Consultoría',title:'El Misterio de la Caja Consultoría.',desc:'Selecciones personalizadas para tu ritual capilar diario, basadas en tu diagnóstico técnico.',box1:'Caja Venus',box1tag:'Experiencia Esencial',box2:'Kit Atelier',box2tag:'Consultoría Técnica',rightTitle:'Cada caja es única',rightDesc:'Nada aquí es aleatorio: tu caja puede incluir accesorios elegidos especialmente para ti.',item0:'Scrunchies de Seda',item1:'Gorro de Satén',item2:'Pinzas',item3:'Peines Bambu',item4:'Masajeador',item5:'Aplicador de Aceite'},
-        diag:{tag:'Manifiesto de Autonomía',title:'El Diagnóstico Particular.',desc:'No somos un marketplace; somos tu brújula capilar. Deja que Cabelos com Amor cure tu próxima experiencia sensorial en casa.',i1full:'1. Análisis',i2full:'2. Historial',i3full:'3. Individual',formTitle:'Reservar Consultoría',l1:'¿Cómo deseas ser llamada?',l2:'WhatsApp para Consultoría',l3:'Tipo de Cabello',l4:'Ritual de Interés',p1:'Ej: Maria Venus',p2:'+34 000 000 000',o30:'Selecciona...',o31:'Liso',o32:'Ondulado',o33:'Rizado',o34:'Crespo',o41:'Consultoría Home Spa (Rizos & Aceites)',o42:'Consultoría Home Spa (Crecimiento & Fuerza)',o43:'Consultoría Home Spa (Matización Rubias)',o44:'Caja Misterio Venus',o45:'Otro Desafío Capilar',btn:'Solicitar mi Diagnóstico',success1:'Pedido Enviado',success2:'Nos pondremos en contacto vía WhatsApp en breve para tu consultoría.'},
-        footer:{vegan:'100% Vegano',cruelty:'Cruelty Free',sub:'Especialistas en Diagnósticos Capilares Personalizados.'}
-      }
-    };
+    <!-- WELCOME POPUP (10% First Purchase) -->
+    <div id="welcome-popup" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-darklux/75 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full border border-dourado/30 shadow-2xl p-8 text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-coral to-celeste"></div>
+            <button onclick="closeWelcomePopup()" class="absolute top-4 right-4 text-darklux/55 hover:text-coral text-2xl font-mono p-1">&times;</button>
+            
+            <span class="text-4xl block mb-2">🎁</span>
+            <span class="text-[9px] tracking-[0.3em] uppercase font-bold text-dourado-dark block mb-1">Oferta de Boas-Vindas</span>
+            <h3 class="font-serif text-2xl text-darklux mb-3">10% de Desconto</h3>
+            <p class="text-xs text-darklux/70 mb-6 leading-relaxed">
+                Subscreva a nossa newsletter ou use o código abaixo para usufruir de 10% de desconto imediato na sua primeira encomenda de luxo.
+            </p>
+            
+            <div class="bg-perola p-4 rounded-2xl border border-dourado/20 mb-6 flex items-center justify-between">
+                <span id="coupon-code" class="font-mono font-bold text-lg tracking-wider text-coral">PRIMEIRA10</span>
+                <button onclick="copyCouponCode()" class="text-[10px] uppercase tracking-widest font-bold text-darklux hover:text-coral transition-colors">Copiar</button>
+            </div>
 
-    function getByPath(obj, path) {
-      return path.split('.').reduce((acc, key) => acc && acc[key] !== undefined ? acc[key] : null, obj);
-    }
+            <button onclick="applyWelcomeCouponAndClose()" class="w-full bg-coral hover:bg-coral-dark text-white text-xs font-bold tracking-widest uppercase py-4 rounded-full transition-all duration-300 shadow-md">
+                Aplicar Desconto e Explorar
+            </button>
+        </div>
+    </div>
 
-    function applyLanguage(lang) {
-      const t = translations[lang] || translations.pt;
-      document.documentElement.lang = lang;
-      document.querySelectorAll('[data-i18n]').forEach((el) => {
-        const key = el.getAttribute('data-i18n');
-        const value = getByPath(t, key);
-        if (value !== null) el.textContent = value;
-      });
-      document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
-        const key = el.getAttribute('data-i18n-placeholder');
-        const value = getByPath(t, key);
-        if (value !== null) el.setAttribute('placeholder', value);
-      });
-      document.querySelectorAll('.lang button').forEach((btn) => {
-        btn.classList.toggle('active', btn.dataset.lang === lang);
-      });
-    }
-  </script>
+    <!-- NOTIFICATION TOP BAR -->
+    <div class="bg-darklux text-white text-[10px] py-2.5 px-4 text-center tracking-widest uppercase flex flex-col sm:flex-row justify-center items-center gap-2 z-50 relative">
+        <span class="font-bold text-coral">✦ CAMPANHA DE FIDELIZAÇÃO:</span>
+        <span>PORTES GRÁTIS E OFERTA DE BRINDES A PARTIR DE 50€</span>
+        <span class="hidden sm:inline">|</span>
+        <span class="font-bold flex items-center gap-1 text-dourado">
+            GANHE 10 PONTOS POR CADA 1€ EM COMPRAS
+        </span>
+    </div>
 
-  <script>
-    const originalLangButtons = document.querySelectorAll('.lang button');
-    originalLangButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        applyLanguage(btn.dataset.lang);
-      });
-    });
-    applyLanguage('pt');
-  </script>
+    <!-- HEADER & NAVIGATION -->
+    <header class="sticky top-0 z-40 bg-perola/90 backdrop-blur-md border-b border-nevoa/30 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-full border border-dourado flex items-center justify-center bg-white transition-all duration-500 group-hover:scale-105 group-hover:border-coral">
+                    <svg class="w-6 h-6 text-coral" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M75 25C65 15 45 15 35 25C20 40 20 60 35 75C45 85 65 85 75 75C60 70 55 55 65 45C72 38 78 30 75 25Z" fill="currentColor" opacity="0.85"/>
+                        <path d="M55 35C48 28 35 32 30 40C25 48 28 58 35 65C45 75 55 70 60 55C63 48 58 40 55 35Z" fill="#D8B77A"/>
+                    </svg>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-serif text-lg tracking-[0.2em] font-semibold leading-none uppercase text-darklux">Coral C</span>
+                    <span class="font-sans text-[9px] tracking-[0.3em] uppercase text-dourado font-medium">Luxury E-Store</span>
+                </div>
+            </a>
+
+            <!-- Desktop Menu -->
+            <nav class="hidden md:flex items-center gap-8 font-medium text-xs tracking-widest uppercase">
+                <a href="#loja" class="hover:text-coral transition-colors duration-300 font-bold text-coral">Comprar Loja</a>
+                <a href="#valores-sustentaveis" class="hover:text-coral transition-colors duration-300">Compromisso Eco</a>
+                <a href="#coral-c-exfoliante" class="hover:text-coral transition-colors duration-300">Exfoliante Coral C</a>
+                <a href="#descontos" class="hover:text-coral transition-colors duration-300">Campanhas</a>
+                <a href="#fidelidade" class="hover:text-coral transition-colors duration-300">Clube Fidelidade</a>
+            </nav>
+
+            <!-- Action buttons -->
+            <div class="flex items-center gap-4">
+                <!-- Loyalty Profile Button -->
+                <button onclick="toggleLoyaltyDrawer()" class="p-2 rounded-full hover:bg-white transition-colors duration-300 relative" aria-label="Perfil de Fidelidade">
+                    <svg class="w-5 h-5 text-darklux" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-dourado rounded-full border border-white"></span>
+                </button>
+
+                <!-- Shopping Cart Button -->
+                <button onclick="toggleCart()" class="relative p-2.5 rounded-full hover:bg-white transition-colors duration-300" aria-label="Carrinho de Compras">
+                    <svg class="w-5 h-5 text-darklux" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    </svg>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-coral text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold scale-0 transition-transform duration-300">0</span>
+                </button>
+                
+                <a href="#loja" class="hidden sm:inline-block bg-darklux hover:bg-coral text-white text-[10px] font-bold tracking-widest uppercase px-6 py-3 rounded-full transition-all duration-300">
+                    Boutique Digital
+                </a>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-darklux" aria-label="Abrir Menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-perola border-b border-nevoa/30 px-6 py-6 transition-all duration-300">
+            <nav class="flex flex-col gap-4 text-xs tracking-widest uppercase font-semibold">
+                <a href="#loja" onclick="toggleMobileMenu()" class="py-2 text-coral">Comprar Loja</a>
+                <a href="#valores-sustentaveis" onclick="toggleMobileMenu()" class="py-2">Compromisso Eco</a>
+                <a href="#coral-c-exfoliante" onclick="toggleMobileMenu()" class="py-2">Exfoliante Coral C</a>
+                <a href="#descontos" onclick="toggleMobileMenu()" class="py-2">Campanhas</a>
+                <a href="#fidelidade" onclick="toggleMobileMenu()" class="py-2">Clube Fidelidade</a>
+                <a href="#loja" onclick="toggleMobileMenu()" class="mt-2 text-center bg-coral text-white py-3 rounded-full">Comprar Agora</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION (Premium E-commerce Multi-Brand Presentation) -->
+    <section class="relative min-h-[80vh] flex items-center justify-center pt-8 pb-16 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute top-[-20%] left-[-10%] w-[60%] h-[80%] rounded-full bg-celeste/30 blur-[120px] opacity-70"></div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[70%] rounded-full bg-coral/15 blur-[130px] opacity-60"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Text Column -->
+                <div class="lg:col-span-6 space-y-8 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/75 backdrop-blur-sm border border-dourado/30 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-coral animate-ping"></span>
+                        <span class="text-[9px] tracking-[0.25em] uppercase font-bold text-dourado-dark">E-Commerce Curado & Multimarcas</span>
+                    </div>
+                    
+                    <h1 class="font-serif text-5xl sm:text-6xl xl:text-7xl text-darklux leading-[1.1] font-normal">
+                        O futuro do <br class="hidden sm:inline">
+                        skincare capilar <br class="hidden sm:inline">
+                        <span class="italic text-coral font-normal text-glow">Multimarcas</span>
+                    </h1>
+                    
+                    <p class="text-sm text-darklux/80 max-w-lg mx-auto lg:mx-0 font-light leading-relaxed">
+                        Curadoria exclusiva de cosmética capilar premium. Encontre os rituais sustentáveis de **Haskell** e **Mímare**, acessórios requintados e a nossa assinatura de luxo **Coral C** (Cabelo Venus).
+                    </p>
+
+                    <!-- Core CTAs -->
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
+                        <a href="#loja" class="cta-pulse bg-coral hover:bg-coral-dark text-white text-xs font-bold tracking-[0.2em] uppercase px-8 py-5 rounded-full transition-all duration-300 shadow-xl shadow-coral/30 text-center">
+                            Explorar a Loja Curada
+                        </a>
+                        <button onclick="openChatBot()" class="bg-white/95 hover:bg-white text-darklux border border-nevoa text-xs font-bold tracking-[0.2em] uppercase px-8 py-5 rounded-full transition-all duration-300 text-center flex items-center justify-center gap-2">
+                            <span>💬</span> Falar com a Consultora
+                        </button>
+                    </div>
+
+                    <!-- Micro assurances for Conversion -->
+                    <div class="pt-6 border-t border-nevoa/40 max-w-md mx-auto lg:mx-0 flex justify-between items-center text-left text-[11px] tracking-wider uppercase font-semibold text-darklux/60">
+                        <span>🛡️ Teste de 7 Dias</span>
+                        <span>📦 Portes Grátis &gt; 50€</span>
+                        <span>🐰 100% Cruelty-Free</span>
+                    </div>
+                </div>
+
+                <!-- Showcase Image Column -->
+                <div class="lg:col-span-6 relative flex justify-center items-center">
+                    <div class="relative w-full max-w-lg aspect-square lg:aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/60 bg-white/30 backdrop-blur-sm group">
+                        <img src="watermarked_img_14346384531304637140.png" alt="Coral Celeste Premium Haircare Campaign" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null; this.src='https://placehold.co/600x800/F7F5F2/FF7F6A?text=Coral+Celeste+Campaign'">
+                        
+                        <!-- Floating Offer badge -->
+                        <div class="absolute top-6 right-6 bg-coral text-white text-[9px] font-bold uppercase tracking-widest px-4 py-2.5 rounded-full shadow-lg z-10 animate-bounce">
+                            OFERTA BRINDES €50+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SUSTAINABLE VALUES HIGHLIGHTS -->
+    <section id="valores-sustentaveis" class="bg-white border-y border-nevoa/30 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-[10px] tracking-[0.3em] uppercase font-bold text-coral block mb-2">Beleza Consciente</span>
+                <h2 class="font-serif text-3xl text-darklux">Compromisso com o Planeta</h2>
+                <p class="text-xs text-darklux/60 mt-2 font-light">Todas as marcas presentes no e-commerce partilham do amor pela saúde dos seus cabelos e pelo ambiente.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                <div class="bg-perola p-6 rounded-2xl border border-nevoa/30 flex flex-col items-center">
+                    <span class="text-3xl mb-3">🌱</span>
+                    <h3 class="font-bold text-xs tracking-wider uppercase mb-1">Fórmulas Veganas</h3>
+                    <p class="text-[11px] text-darklux/60">Sem qualquer ingrediente ou subproduto de origem animal.</p>
+                </div>
+                <div class="bg-perola p-6 rounded-2xl border border-nevoa/30 flex flex-col items-center">
+                    <span class="text-3xl mb-3">🐰</span>
+                    <h3 class="font-bold text-xs tracking-wider uppercase mb-1">Sem Testes em Animais</h3>
+                    <p class="text-[11px] text-darklux/60">Garantia Cruelty-Free certificada em todas as linhas e matérias-primas.</p>
+                </div>
+                <div class="bg-perola p-6 rounded-2xl border border-nevoa/30 flex flex-col items-center">
+                    <span class="text-3xl mb-3">♻️</span>
+                    <h3 class="font-bold text-xs tracking-wider uppercase mb-1">Pegada Ecológica</h3>
+                    <p class="text-[11px] text-darklux/60">Prioridade a embalagens biodegradáveis, recicláveis e ingredientes biodegradáveis.</p>
+                </div>
+                <div class="bg-perola p-6 rounded-2xl border border-nevoa/30 flex flex-col items-center">
+                    <span class="text-3xl mb-3">🔬</span>
+                    <h3 class="font-bold text-xs tracking-wider uppercase mb-1">Segurança Clínica</h3>
+                    <p class="text-[11px] text-darklux/60">Fórmulas ricas em ativos orgânicos de altíssima pureza e eficiência.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROGRESSIVE DISCOUNTS CAMPAIGN HIGHLIGHT -->
+    <section id="descontos" class="bg-perola/50 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Tier 1 -->
+                <div class="flex items-center gap-4 bg-white p-6 rounded-2xl border border-nevoa/30">
+                    <span class="text-3xl">📦</span>
+                    <div>
+                        <h4 class="font-bold text-xs tracking-wider uppercase text-darklux">Envio & Amostras Grátis</h4>
+                        <p class="text-[11px] text-darklux/70 mt-1">A partir de encomendas superiores a **50€**, receba portes gratuitos e um conjunto de brindes exclusivos.</p>
+                    </div>
+                </div>
+                <!-- Tier 2 -->
+                <div class="flex items-center gap-4 bg-white p-6 rounded-2xl border border-nevoa/30">
+                    <span class="text-3xl text-coral">⚡</span>
+                    <div>
+                        <h4 class="font-bold text-xs tracking-wider uppercase text-coral">Desconto Extra de 5%</h4>
+                        <p class="text-[11px] text-darklux/70 mt-1">Adicione produtos de qualquer marca e receba um desconto extra de 5% em encomendas superiores a **75€**.</p>
+                    </div>
+                </div>
+                <!-- Tier 3 -->
+                <div class="flex items-center gap-4 bg-white p-6 rounded-2xl border border-nevoa/30">
+                    <span class="text-3xl text-dourado-dark">✨</span>
+                    <div>
+                        <h4 class="font-bold text-xs tracking-wider uppercase text-dourado-dark">Desconto Elite de 10%</h4>
+                        <p class="text-[11px] text-darklux/70 mt-1">Encomendas a partir de **120€** desbloqueiam 10% de desconto adicional automático no total do carrinho.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CORE FLAGSHIP HIGHLIGHT: CORAL C EXFOLIANTE LÍQUIDO -->
+    <section id="coral-c-exfoliante" class="py-24 bg-perola relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                
+                <div class="lg:col-span-6 space-y-6">
+                    <span class="text-xs tracking-[0.3em] uppercase font-bold text-coral block">O Nosso Produto Ícone</span>
+                    <h2 class="font-serif text-4xl sm:text-5xl text-darklux font-normal leading-tight">
+                        Exfoliante Líquido <br>
+                        <span class="italic text-coral font-normal">Coral C Scalp Renovator</span>
+                    </h2>
+                    <p class="text-sm text-darklux/70 leading-relaxed font-light">
+                        Esqueça os esfoliantes físicos agressivos de sal. O **Exfoliante Líquido Coral C** é uma formulação de peeling químico suave para o couro cabeludo, desenvolvida com Ácido Salicílico e Extratos de Romã. Atua na desobstrução profunda dos folículos, prevenindo a oleosidade e estimulando o crescimento capilar de forma ultra-delicada.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-coral/10 text-coral flex items-center justify-center font-bold text-xs">✓</span>
+                            <span class="text-xs font-semibold text-darklux">Ácido Salicílico Lipossolúvel</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-coral/10 text-coral flex items-center justify-center font-bold text-xs">✓</span>
+                            <span class="text-xs font-semibold text-darklux">Zero atrito mecânico irritante</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-coral/10 text-coral flex items-center justify-center font-bold text-xs">✓</span>
+                            <span class="text-xs font-semibold text-darklux">Equilíbrio do Microbioma</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-coral/10 text-coral flex items-center justify-center font-bold text-xs">✓</span>
+                            <span class="text-xs font-semibold text-darklux">Fragrância Botânica Relaxante</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-6">
+                        <button onclick="addToCart('Coral C — Exfoliante Líquido', 35, '🧪')" class="bg-coral hover:bg-coral-dark text-white text-xs font-bold tracking-widest uppercase px-8 py-4.5 rounded-full transition-all duration-300 shadow-lg">
+                            Adicionar ao Carrinho • 35,00€
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6">
+                    <div class="rounded-3xl overflow-hidden shadow-2xl border border-white relative group">
+                        <img src="watermarked_img_16162917302068266050.png" alt="Fórmula Coral C Exfoliante Líquido" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null; this.src='https://placehold.co/600x400/F7F5F2/A9D8F3?text=Coral+C+Liquid+Peeling'">
+                        <div class="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md p-6 rounded-2xl shadow-xl flex justify-between items-center">
+                            <div>
+                                <span class="text-[9px] font-bold text-coral uppercase tracking-widest">Estética de Luxo</span>
+                                <h4 class="font-serif text-lg font-semibold text-darklux">Sensação de Frescura Absoluta</h4>
+                            </div>
+                            <span class="text-xs bg-coral-light text-coral font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">35,00€</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- MULTI-BRAND E-COMMERCE CATALOGUE WITH INTERACTIVE FILTERING -->
+    <section id="loja" class="py-24 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12 space-y-4">
+                <span class="text-[10px] tracking-[0.3em] uppercase font-bold text-coral block">Curadoria Multimarcas</span>
+                <h2 class="font-serif text-4xl sm:text-5xl text-darklux font-normal">A Nossa Loja E-Commerce</h2>
+                <p class="text-sm text-darklux/60 font-light">Uma coleção altamente selecionada para uma rotina capilar premium, saudável e eficaz.</p>
+                <div class="w-16 h-[1.5px] bg-dourado mx-auto mt-4"></div>
+            </div>
+
+            <!-- Shop Categorization & Brand Filtering -->
+            <div class="flex flex-wrap justify-center gap-3 mb-16" id="store-filters">
+                <button onclick="filterCatalog('todos')" class="filter-btn px-6 py-2.5 rounded-full border border-darklux text-xs tracking-wider uppercase font-bold transition-all duration-300 bg-darklux text-white">
+                    Todos os Produtos
+                </button>
+                <button onclick="filterCatalog('coral-c')" class="filter-btn px-6 py-2.5 rounded-full border border-nevoa text-xs tracking-wider uppercase font-bold transition-all duration-300 hover:border-coral hover:text-coral text-darklux bg-white">
+                    Coral C (Marca Própria)
+                </button>
+                <button onclick="filterCatalog('haskell')" class="filter-btn px-6 py-2.5 rounded-full border border-nevoa text-xs tracking-wider uppercase font-bold transition-all duration-300 hover:border-coral hover:text-coral text-darklux bg-white">
+                    Haskell (Sustentável)
+                </button>
+                <button onclick="filterCatalog('mimare')" class="filter-btn px-6 py-2.5 rounded-full border border-nevoa text-xs tracking-wider uppercase font-bold transition-all duration-300 hover:border-coral hover:text-coral text-darklux bg-white">
+                    Mímare (Vegano)
+                </button>
+                <button onclick="filterCatalog('acessorios')" class="filter-btn px-6 py-2.5 rounded-full border border-nevoa text-xs tracking-wider uppercase font-bold transition-all duration-300 hover:border-coral hover:text-coral text-darklux bg-white">
+                    Acessórios Vênus
+                </button>
+            </div>
+
+            <!-- Grid of Products -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" id="product-grid">
+                
+                <!-- PRODUCT 1: Flagship Coral C Liquid Exfoliator -->
+                <div class="product-card bg-perola rounded-3xl p-6 border border-nevoa/40 flex flex-col justify-between group transition-all duration-300 hover:shadow-xl hover:-translate-y-1" data-brand="coral-c">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-coral/15 text-coral text-[9px] font-bold tracking-widest uppercase px-3 py-1 rounded-full">Exfoliante Capilar</span>
+                            <span class="text-xs text-darklux/40 font-medium">150ml</span>
+                        </div>
+                        <div class="aspect-square rounded-2xl bg-white overflow-hidden mb-6 flex items-center justify-center p-6 border border-nevoa/10 relative">
+                            <span class="text-5xl">🧪</span>
+                            <p class="absolute bottom-2 left-0 right-0 text-center text-[9px] uppercase tracking-wider font-bold text-coral">Assinatura Coral C</p>
+                        </div>
+                        <h3 class="font-serif text-lg text-darklux mb-1 font-bold">Coral C — Exfoliante Líquido</h3>
+                        <p class="text-[11px] text-darklux/70 font-light mb-4 leading-relaxed">
+                            Peeling suave de ácido salicílico para uma raiz oxigenada e livre de excesso de sebo.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-nevoa/30 flex items-center justify-between">
+                        <span class="text-lg font-serif text-darklux font-bold">35,00€</span>
+                        <button onclick="addToCart('Coral C — Exfoliante Líquido', 35, '🧪')" class="bg-darklux hover:bg-coral text-white text-[10px] tracking-widest uppercase font-bold px-4 py-2.5 rounded-full transition-colors">
+                            Comprar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PRODUCT 2: Brand Own Pearl Exfoliator -->
+                <div class="product-card bg-perola rounded-3xl p-6 border border-nevoa/40 flex flex-col justify-between group transition-all duration-300 hover:shadow-xl hover:-translate-y-1" data-brand="coral-c">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-dourado/15 text-dourado-dark text-[9px] font-bold tracking-widest uppercase px-3 py-1 rounded-full">Exfoliante Físico</span>
+                            <span class="text-xs text-darklux/40 font-medium">120g</span>
+                        </div>
+                        <div class="aspect-square rounded-2xl bg-white overflow-hidden mb-6 flex items-center justify-center p-6 border border-nevoa/10 relative">
+                            <span class="text-5xl">🦪</span>
+                            <p class="absolute bottom-2 left-0 right-0 text-center text-[9px] uppercase tracking-wider font-bold text-dourado-dark">Coleção Vênus de Luxo</p>
+                        </div>
+                        <h3 class="font-serif text-lg text-darklux mb-1 font-bold">Exfoliante de Pó de Pérola</h3>
+                        <p class="text-[11px] text-darklux/70 font-light mb-4 leading-relaxed">
+                            Esfoliação remineralizante suave de pó de pérolas moídas para renovar o brilho.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-nevoa/30 flex items-center justify-between">
+                        <span class="text-lg font-serif text-darklux font-bold">38,00€</span>
+                        <button onclick="addToCart('Exfoliante de Pó de Pérola', 38, '🦪')" class="bg-darklux hover:bg-coral text-white text-[10px] tracking-widest uppercase font-bold px-4 py-2.5 rounded-full transition-colors">
+                            Comprar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PRODUCT 3: Cabelo Venus Shampoo -->
+                <div class="product-card bg-perola rounded-3xl p-6 border border-nevoa/40 flex flex-col justify-between group transition-all duration-300 hover:shadow-xl hover:-translate-y-1" data-brand="coral-c">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-celeste/20 text-celeste-dark text-[9px] font-bold tracking-widest uppercase px-3 py-1 rounded-full">Gama Capilar</span>
+                            <span class="text-xs text-darklux/40 font-medium">250ml</span>
+                        </div>
+                        <div class="aspect-square rounded-2xl bg-white overflow-hidden mb-6 flex items-center justify-center p-6 border border-nevoa/10 relative">
+                            <span class="text-5xl">🧴</span>
+                            <p class="absolute bottom-2 left-0 right-0 text-center text-[9px] uppercase tracking-wider font-bold text-celeste-dark">Cabelo Venus</p>
+                        </div>
+                        <h3 class="font-serif text-lg text-darklux mb-1 font-bold">Venus Divine Shampô</h3>
+                        <p class="text-[11px] text-darklux/70 font-light mb-4 leading-relaxed">
+                            Shampoo nutritivo e hidratante com óleo de rosa mosqueta para cabelos brilhantes.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-nevoa/30 flex items-center justify-between">
+                        <span class="text-lg font-serif text-darklux font-bold">28,00€</span>
+                        <button onclick="addToCart('Venus Divine Shampô', 28, '🧴')" class="bg-darklux hover:bg-coral text-white text-[10px] tracking-widest uppercase font-bold px-4 py-2.5 rounded-full transition-colors">
+                            Comprar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PRODUCT 4: Cabelo Venus Silk Conditioner -->
+                <div class="product-card bg-perola rounded-3xl p-6 border border-nevoa/40 flex flex-col justify-between group transition-all duration-300 hover:shadow-xl hover:-translate-y-1" data-brand="coral-c">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-celeste/20 text-celeste-dark text-[9px] font-bold tracking-widest uppercase px-3 py-1 rounded-full">Gama Capilar</span>
+                            <span class="text-xs text-darklux/40 font-medium">200ml</span>
+                        </div>
+                        <div class="aspect-square rounded-2xl bg-white overflow-hidden mb-6 flex items-center justify-center p-6 border border-nevoa/10 relative">
+                            <span class="text-5xl">🧴</span>
+                            <p class="absolute bottom-2 left-0 right-0 text-center text-[9px] uppercase tracking-wider font-bold text-celeste-dark">Cabelo Venus</p>
+                        </div>
+                        <h3 class="font-serif text-lg text-darklux mb-1 font-bold">Venus Silk Conditioner</h3>
+                        <p class="text-[11px] text-darklux/70 font-light mb-4 leading-relaxed">
+                            Fórmula ultrarrica com proteína de seda que suaviza cutículas e elimina o frizz.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-nevoa/30 flex items-center justify-between">
+                        <span class="text-lg font-serif text-darklux font-bold">30,00€</span>
+                        <button onclick="addToCart('Venus Silk Conditioner', 30, '🧴')" class="bg-darklux hover:bg-coral text-white text-[10px] tracking-widest uppercase font-bold px-4 py-2.5 rounded-full transition-colors">
+                            Comprar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PRODUCT 5: Cabelo Venus Mask (New own product!) -->
+                <div class="product-card bg-perola rounded-3xl p-6 border border-nevoa/40 flex flex-col justify-between group transition-all duration-300 hover:shadow-xl hover:-translate-y-1" data-brand="coral-c">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-celeste/20 text-celeste-dark text-[9px] font-bold tracking-widest uppercase px-3 py-1 rounded-full">Gama Capilar</span>
+                            <span class="text-xs text-darklux/40 font-medium">200ml</span>
+                        </div>
+                        <div class="aspect-square rounded-2xl bg-white overflow-hidden mb-6 flex items-center justify-center p-6 border border-nevoa/10 relative">
+                            <span class="text-5xl">🍯</span>
+                            <p class="absolute bottom-2 left-0 right-0 text-center text-[9px] uppercase tracking-wider font-bold text-celeste-dark">Cabelo Venus</p>
+                        </div>
+                        <h3 class="font-serif text-lg text-darklux mb-1 font-bold">Venus Divine Máscara</h3>
+                        <p class="text-[11px] text-darklux/70 font-light mb-4 leading-relaxed">
+                            Máscara ultrarrica de reconstrução e reposição lipídica profunda para fios danificados.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-nevoa/30 flex items-center justify-between">
+                        <span class="text-lg font-serif text-darklux font-bold">35,00€</span>
+                        <button onclick="addToCart('Venus Divine Máscara', 35, '🍯')" class="bg-darklux hover:bg-coral text-white text-[10px] tracking-widest uppercase font-bold px-4 py-2.5 rounded-full transition-colors">
+                            Comprar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PRODUCT 6: Haskell Cavalo Forte Shampoo (Partner) -->
+                <div class="product-card bg-perola rounded-3xl p-6 border border-nevoa/40 flex flex-col justify-between group transition-all duration-300 hover:shadow-xl hover:-translate-y-1" data-brand="haskell">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-emerald-100 text-emerald-800 text-[9px] font-bold tracking-widest uppercase px-3 py-1 rounded-full">Sustentável</span>
+                            <span class="text-xs text-darklux/40 font-medium">300ml</span>
+                        </div>
+                        <div class="aspect-square rounded-2xl bg-white overflow-hidden mb-6 flex items-center justify-center p-6 border border-nevoa/10 relative">
+                            <span class="text-5xl">🐴</span>
+                            <p class="absolute bottom-2 left-0 right-0 text-center text-[9px] uppercase tracking-wider font-bold text-emerald-800">Haskell</p>
+                        </div>
+                        <h3 class="font-serif text-lg text-darklux mb-1 font-bold">Haskell Cavalo Forte Shampô</h3>
+                        <p class="text-[11px] text-darklux/70 font-light mb-4 leading-relaxed">
+                            Estimula o crescimento e brilho extremo com Biotina, Pantenol e Queratina vegetal.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-nevoa/30 flex items-center justify-between">
+                        <span class="text-lg font-serif text-darklux font-bold">18,50€</span>
+                        <button onclick="addToCart('Haskell Cavalo Forte Shampô', 18.5, '🐴')" class="bg-darklux hover:bg-coral text-white text-[10px] tracking-widest uppercase font-bold px-4 py-2.5 rounded-full transition-colors">
+                            Comprar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PRODUCT 7: Mímare No-Frizz Shampoo (Partner) -->
+                <div class="product-card bg-perola rounded-3xl p-6 border border-nevoa/40 flex flex-col justify-between group transition-all duration-300 hover:shadow-xl hover:-translate-y-1" data-brand="mimare">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-blue-100 text-blue-800 text-[9px] font-bold tracking-widest uppercase px-3 py-1 rounded-full">100% Vegano</span>
+                            <span class="text-xs text-darklux/40 font-medium">300ml</span>
+                        </div>
+                        <div class="aspect-square rounded-2xl bg-white overflow-hidden mb-6 flex items-center justify-center p-6 border border-nevoa/10 relative">
+                            <span class="text-5xl">🥑</span>
+                            <p class="absolute bottom-2 left-0 right-0 text-center text-[9px] uppercase tracking-wider font-bold text-blue-800">Mímare</p>
+                        </div>
+                        <h3 class="font-serif text-lg text-darklux mb-1 font-bold">Mímare No-Frizz Shampô</h3>
+                        <p class="text-[11px] text-darklux/70 font-light mb-4 leading-relaxed">
+                            Controlo absoluto do frizz através dos poderes do óleo de abacate orgânico.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-nevoa/30 flex items-center justify-between">
+                        <span class="text-lg font-serif text-darklux font-bold">16,00€</span>
+                        <button onclick="addToCart('Mímare No-Frizz Shampô', 16, '🥑')" class="bg-darklux hover:bg-coral text-white text-[10px] tracking-widest uppercase font-bold px-4 py-2.5 rounded-full transition-colors">
+                            Comprar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PRODUCT 8: Microfiber Towel (Accessory) -->
+                <div class="product-card bg-perola rounded-3xl p-6 border border-nevoa/40 flex flex-col justify-between group transition-all duration-300 hover:shadow-xl hover:-translate-y-1" data-brand="acessorios">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-dourado/15 text-dourado-dark text-[9px] font-bold tracking-widest uppercase px-3 py-1 rounded-full">Secagem Segura</span>
+                            <span class="text-xs text-darklux/40 font-medium">Unissexo</span>
+                        </div>
+                        <div class="aspect-square rounded-2xl bg-white overflow-hidden mb-6 flex items-center justify-center p-6 border border-nevoa/10 relative">
+                            <span class="text-5xl">🧖‍♀️</span>
+                            <p class="absolute bottom-2 left-0 right-0 text-center text-[9px] uppercase tracking-wider font-bold text-dourado-dark">Acessório</p>
+                        </div>
+                        <h3 class="font-serif text-lg text-darklux mb-1 font-bold">Toalha de Microfibra</h3>
+                        <p class="text-[11px] text-darklux/70 font-light mb-4 leading-relaxed">
+                            Absorção ultrarrápida da humidade que reduz o frizz e evita a quebra capilar.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-nevoa/30 flex items-center justify-between">
+                        <span class="text-lg font-serif text-darklux font-bold">15,00€</span>
+                        <button onclick="addToCart('Toalha de Microfibra', 15, '🧖‍♀️')" class="bg-darklux hover:bg-coral text-white text-[10px] tracking-widest uppercase font-bold px-4 py-2.5 rounded-full transition-colors">
+                            Comprar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PRODUCT 9: Special Comb (Accessory) -->
+                <div class="product-card bg-perola rounded-3xl p-6 border border-nevoa/40 flex flex-col justify-between group transition-all duration-300 hover:shadow-xl hover:-translate-y-1" data-brand="acessorios">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-dourado/15 text-dourado-dark text-[9px] font-bold tracking-widest uppercase px-3 py-1 rounded-full">Madeira Nobre</span>
+                            <span class="text-xs text-darklux/40 font-medium">Antiestático</span>
+                        </div>
+                        <div class="aspect-square rounded-2xl bg-white overflow-hidden mb-6 flex items-center justify-center p-6 border border-nevoa/10 relative">
+                            <span class="text-5xl">🪮</span>
+                            <p class="absolute bottom-2 left-0 right-0 text-center text-[9px] uppercase tracking-wider font-bold text-dourado-dark">Acessório</p>
+                        </div>
+                        <h3 class="font-serif text-lg text-darklux mb-1 font-bold">Pente de Madeira Especial</h3>
+                        <p class="text-[11px] text-darklux/70 font-light mb-4 leading-relaxed">
+                            Evita a eletricidade estática nos fios e massageia suavemente estimulando a circulação.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-nevoa/30 flex items-center justify-between">
+                        <span class="text-lg font-serif text-darklux font-bold">12,50€</span>
+                        <button onclick="addToCart('Pente de Madeira Especial', 12.5, '🪮')" class="bg-darklux hover:bg-coral text-white text-[10px] tracking-widest uppercase font-bold px-4 py-2.5 rounded-full transition-colors">
+                            Comprar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PRODUCT 10: Clips/Presilhas Venus (Accessory) -->
+                <div class="product-card bg-perola rounded-3xl p-6 border border-nevoa/40 flex flex-col justify-between group transition-all duration-300 hover:shadow-xl hover:-translate-y-1" data-brand="acessorios">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-dourado/15 text-dourado-dark text-[9px] font-bold tracking-widest uppercase px-3 py-1 rounded-full">Exclusivo</span>
+                            <span class="text-xs text-darklux/40 font-medium">Par</span>
+                        </div>
+                        <div class="aspect-square rounded-2xl bg-white overflow-hidden mb-6 flex items-center justify-center p-6 border border-nevoa/10 relative">
+                            <span class="text-5xl">✨</span>
+                            <p class="absolute bottom-2 left-0 right-0 text-center text-[9px] uppercase tracking-wider font-bold text-dourado-dark">Acessório</p>
+                        </div>
+                        <h3 class="font-serif text-lg text-darklux mb-1 font-bold">Presilhas Tema Venus</h3>
+                        <p class="text-[11px] text-darklux/70 font-light mb-4 leading-relaxed">
+                            Design orgânico com acabamento dourado premium para criar rituais elegantes.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-nevoa/30 flex items-center justify-between">
+                        <span class="text-lg font-serif text-darklux font-bold">9,90€</span>
+                        <button onclick="addToCart('Presilhas Tema Venus', 9.9, '✨')" class="bg-darklux hover:bg-coral text-white text-[10px] tracking-widest uppercase font-bold px-4 py-2.5 rounded-full transition-colors">
+                            Comprar
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- LOYALTY CLUB & REFERRALS SECTION -->
+    <section id="fidelidade" class="py-24 bg-perola relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                <!-- Loyalty Concept Presentation -->
+                <div class="lg:col-span-6 space-y-6">
+                    <span class="text-xs tracking-[0.3em] uppercase font-bold text-dourado-dark block">Clube de Fidelidade Coral C</span>
+                    <h2 class="font-serif text-4xl text-darklux font-normal">A Cada Compra, Fica Mais Próxima do Cuidado Perfeito</h2>
+                    <p class="text-sm text-darklux/70 leading-relaxed font-light">
+                        Acreditamos em relações de longo prazo. No nosso **Clube de Fidelidade**, cada 1€ gasto em qualquer marca no nosso site reverte em **10 pontos** no seu perfil de fidelidade. Acumule pontos e troque-os por descontos, rituais exclusivos e produtos de assinatura Coral C totalmente gratuitos.
+                    </p>
+
+                    <div class="space-y-4 pt-4">
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-full bg-coral-light text-coral flex items-center justify-center font-bold font-serif shrink-0">1</div>
+                            <div>
+                                <h4 class="font-bold text-xs tracking-wider uppercase text-darklux">Recomende a Amigos</h4>
+                                <p class="text-[11px] text-darklux/60 mt-1">Partilhe o seu link exclusivo. Quando um amigo realizar a primeira compra, ambos recebem **500 pontos** de bónus!</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-full bg-celeste-light text-celeste-dark flex items-center justify-center font-bold font-serif shrink-0">2</div>
+                            <div>
+                                <h4 class="font-bold text-xs tracking-wider uppercase text-darklux">Resgate Descontos Extra</h4>
+                                <p class="text-[11px] text-darklux/60 mt-1">Troque os seus pontos acumulados no checkout para obter descontos imediatos de 10€, 20€ ou produtos de oferta.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-6">
+                        <button onclick="toggleLoyaltyDrawer()" class="bg-darklux hover:bg-coral text-white text-xs font-bold tracking-widest uppercase px-8 py-4 rounded-full transition-all duration-300">
+                            Abrir a Minha Área de Fidelidade
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Client Loyalty Dashboard Preview Card -->
+                <div class="lg:col-span-6">
+                    <div class="bg-white rounded-3xl p-8 border border-nevoa/40 shadow-xl space-y-6 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-coral to-dourado"></div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-perola flex items-center justify-center text-md">👑</div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-darklux">Sílvia Santos</h4>
+                                    <p class="text-[10px] text-coral font-bold uppercase tracking-wider">Cliente VIP Coral C</p>
+                                </div>
+                            </div>
+                            <span class="text-xs bg-dourado/15 text-dourado-dark font-bold px-3 py-1.5 rounded-full">Nível Ouro</span>
+                        </div>
+
+                        <div class="bg-perola p-6 rounded-2xl border border-nevoa/30 text-center space-y-2">
+                            <p class="text-[10px] tracking-widest uppercase font-bold text-darklux/50">O Seu Saldo Atual</p>
+                            <p class="text-4xl font-serif font-bold text-darklux text-glow"><span id="demo-points">1,250</span> <span class="text-lg font-sans text-dourado-dark">Pontos</span></p>
+                            <p class="text-[10px] text-darklux/60">Equivalente a **12.50€** de saldo de desconto disponível.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <p class="text-[10px] tracking-widest uppercase font-bold text-darklux/60">O Seu Link de Recomendação Único</p>
+                            <div class="flex gap-2">
+                                <input type="text" readonly value="https://coralceleste.pt/ref=silviasantos" class="bg-perola border border-nevoa rounded-xl px-4 py-3 text-xs w-full text-darklux/70 focus:outline-none">
+                                <button onclick="showToast('Link de recomendação copiado! Envie aos seus amigos.')" class="bg-coral text-white text-[10px] font-bold uppercase px-5 py-3 rounded-xl hover:bg-coral-dark transition-colors">Copiar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SENSORIAL & TEXTURES DESIGN PRESENTATION -->
+    <section id="texturas" class="py-24 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                
+                <div class="lg:col-span-6 space-y-6">
+                    <span class="text-xs tracking-[0.3em] uppercase font-bold text-coral block">Rica Experiência Tátil</span>
+                    <h2 class="font-serif text-4xl text-darklux font-normal leading-tight">
+                        A Ciência das <br> Texturas Sensoriais
+                    </h2>
+                    <p class="text-xs text-darklux/70 font-light leading-relaxed">
+                        Acreditamos que o cuidado capilar deve ser uma experiência de puro prazer sensorial. As nossas finais contam com toques aveludados, loções fluidas e texturas ultrarricas criadas sob medida para derreter suavemente ao entrar em contato com a água e com o couro cabeludo.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                        <div class="bg-perola p-5 rounded-2xl border border-nevoa/30 space-y-2">
+                            <span class="text-xl">⚪</span>
+                            <h4 class="font-bold text-xs tracking-wider uppercase text-darklux">Exfoliante Líquido Transparente</h4>
+                            <p class="text-[10px] text-darklux/60">Uma loção aquosa levíssima que penetra de imediato no folículo sem deixar resíduos oleosos ou pegajosos na raiz.</p>
+                        </div>
+                        <div class="bg-perola p-5 rounded-2xl border border-nevoa/30 space-y-2">
+                            <span class="text-xl">🧴</span>
+                            <h4 class="font-bold text-xs tracking-wider uppercase text-darklux">Seda Hidratante Fluida</h4>
+                            <p class="text-[10px] text-darklux/60">Fórmulas ricas de condicionamento que deslizam perfeitamente nos fios, facilitando o desembaraço imediato.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6">
+                    <div class="rounded-3xl overflow-hidden shadow-2xl border border-white/40 max-w-lg mx-auto relative group">
+                        <img src="watermarked_img_14060294976438742254.png" alt="Cabelo Venus Sensorial Texture Moodboard" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null; this.src='https://placehold.co/600x400/2C1E1B/FF7F6A?text=Venus+Aesthetic+Textures'">
+                        <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-xl border border-dourado/20">
+                            <p class="text-[9px] font-bold uppercase tracking-wider text-dourado-dark">Estudo Texturizado #490</p>
+                            <p class="text-[11px] font-medium text-darklux">Fórmulas Fluidas de Alta Performance</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- GUARANTEE INTEGRATION -->
+    <section class="py-20 bg-perola border-y border-nevoa/30">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6">
+            <span class="text-4xl block">🛡️</span>
+            <h3 class="font-serif text-3xl text-darklux">Garantia Absoluta Coral C</h3>
+            <p class="text-sm text-darklux/80 max-w-2xl mx-auto font-light leading-relaxed">
+                Acreditamos tanto na qualidade e eficácia da curadoria de produtos disponíveis no nosso e-commerce que oferecemos uma garantia integral de satisfação: experimente qualquer gama por **7 dias**. Se não notar uma transformação expressiva no brilho e na saúde dos seus fios, devolvemos 100% do seu valor investido. Sem burocracias.
+            </p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-darklux text-perola pt-20 pb-10 border-t border-white/5 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-white/10">
+                <div class="md:col-span-4 space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full border border-dourado flex items-center justify-center bg-white">
+                            <svg class="w-6 h-6 text-coral" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M75 25C65 15 45 15 35 25C20 40 20 60 35 75C45 85 65 85 75 75C60 70 55 55 65 45C72 38 78 30 75 25Z" fill="currentColor" opacity="0.85"/>
+                                <path d="M55 35C48 28 35 32 30 40C25 48 28 58 35 65C45 75 55 70 60 55C63 48 58 40 55 35Z" fill="#D8B77A"/>
+                            </svg>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="font-serif text-md tracking-[0.2em] font-semibold leading-none uppercase text-perola">Coral Celeste</span>
+                            <span class="font-sans text-[8px] tracking-[0.3em] uppercase text-dourado font-medium">Luxury E-Store</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-perola/60 leading-relaxed font-light">
+                        Curadoria exclusiva de marcas e produtos premium de skincare capilar de luxo.
+                    </p>
+                </div>
+
+                <div class="md:col-span-4 grid grid-cols-2 gap-8 text-xs font-light">
+                    <div class="space-y-4">
+                        <h4 class="font-bold tracking-widest uppercase text-dourado">Explorar</h4>
+                        <ul class="space-y-2 text-perola/70">
+                            <li><a href="#loja" class="hover:text-coral transition-colors">Ver Loja</a></li>
+                            <li><a href="#coral-c-exfoliante" class="hover:text-coral transition-colors">Exfoliante Coral C</a></li>
+                            <li><a href="#fidelidade" class="hover:text-coral transition-colors">Fidelidade</a></li>
+                        </ul>
+                    </div>
+                    <div class="space-y-4">
+                        <h4 class="font-bold tracking-widest uppercase text-dourado">Termos</h4>
+                        <ul class="space-y-2 text-perola/70">
+                            <li><a href="#" class="hover:text-coral transition-colors">Privacidade</a></li>
+                            <li><a href="#" class="hover:text-coral transition-colors">Portes & Devoluções</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="md:col-span-4 space-y-4">
+                    <h4 class="font-bold tracking-widest uppercase text-dourado text-xs">Clube VIP Coral C</h4>
+                    <form onsubmit="handleSubscribe(event)" class="flex gap-2">
+                        <input type="email" placeholder="Seu e-mail..." class="bg-white/5 border border-white/10 rounded-full px-4 py-3 text-xs w-full text-perola focus:outline-none focus:border-coral" required>
+                        <button type="submit" class="bg-coral hover:bg-coral-dark text-white text-[10px] tracking-widest uppercase font-bold px-5 py-3 rounded-full shrink-0">
+                            Registo
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="pt-8 text-[10px] text-perola/40 font-light tracking-wider text-center md:text-left">
+                <p>&copy; 2026 CORAL CELESTE. Todos os direitos reservados. Lisboa, Portugal.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE SHOPPING CART WITH PROGRESSIVE DISCOUNT TRACKER -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute inset-0 bg-darklux/50 backdrop-blur-sm transition-opacity" onclick="toggleCart()"></div>
+
+            <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+                <div class="pointer-events-auto w-screen max-w-md">
+                    <div class="flex h-full flex-col overflow-y-scroll bg-white shadow-2xl">
+                        <!-- Cart Header -->
+                        <div class="flex items-center justify-between px-6 py-6 border-b border-nevoa/40 bg-perola">
+                            <h2 class="font-serif text-xl font-bold text-darklux">O Seu Carrinho</h2>
+                            <button onclick="toggleCart()" class="text-darklux hover:text-coral text-lg p-2 font-mono">&times;</button>
+                        </div>
+
+                        <!-- Progress Bar for Discounts and Gifts -->
+                        <div class="bg-celeste/20 p-6 border-b border-nevoa/30 space-y-3">
+                            <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider text-darklux/70">
+                                <span id="progress-text-target">Faltam 50.00€ para ter Portes Grátis + Brindes!</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-perola rounded-full overflow-hidden relative">
+                                <div id="cart-progress-bar" class="h-full bg-gradient-to-r from-coral to-celeste transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                            <div class="flex justify-between text-[9px] text-darklux/50 font-bold">
+                                <span>0€</span>
+                                <span>🎁 50€ Brinde & Portes</span>
+                                <span>⚡ 75€ Desconto Extra (5%)</span>
+                                <span>✨ 120€ Desconto Elite (10%)</span>
+                            </div>
+                        </div>
+
+                        <!-- Cart Product List -->
+                        <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6" id="cart-items-container">
+                            <div id="cart-empty-state" class="h-full flex flex-col items-center justify-center text-center space-y-4">
+                                <span class="text-5xl">🧴</span>
+                                <h3 class="font-serif text-lg text-darklux">Seu ritual capilar está vazio</h3>
+                                <p class="text-xs text-darklux/60 max-w-xs">Adicione os seus produtos favoritos para usufruir das nossas campanhas exclusivas.</p>
+                                <button onclick="toggleCart()" class="bg-coral text-white text-xs font-bold tracking-widest uppercase px-6 py-3 rounded-full">Comprar Agora</button>
+                            </div>
+                            <div id="cart-items" class="space-y-4 hidden"></div>
+                        </div>
+
+                        <!-- Cart Footer Summary -->
+                        <div class="border-t border-nevoa/40 bg-perola px-6 py-6 space-y-4 hidden" id="cart-footer">
+                            <div class="space-y-2 text-xs border-b border-nevoa/20 pb-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-darklux/60 uppercase tracking-widest font-bold">Subtotal</span>
+                                    <span id="cart-subtotal" class="font-bold">0.00€</span>
+                                </div>
+                                <div id="progressive-discount-row" class="flex justify-between items-center text-coral font-bold hidden">
+                                    <span class="uppercase tracking-widest">Desconto de Encomenda</span>
+                                    <span id="progressive-discount-val">-0.00€</span>
+                                </div>
+                                <div id="coupon-discount-row" class="flex justify-between items-center text-dourado-dark font-bold hidden">
+                                    <span class="uppercase tracking-widest">Cupão de Boas-Vindas (10%)</span>
+                                    <span id="coupon-discount-val">-0.00€</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm font-bold pt-2 border-t border-nevoa/20">
+                                    <span class="uppercase tracking-widest text-darklux">Total Final</span>
+                                    <span id="cart-total" class="font-serif text-lg text-darklux">0.00€</span>
+                                </div>
+                            </div>
+                            
+                            <button onclick="openCheckoutModal()" class="w-full bg-coral hover:bg-coral-dark text-white text-xs font-bold tracking-widest uppercase py-4 rounded-full shadow-lg transition-all duration-300">
+                                Seguir para Pagamento Seguro
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOYALTY PROFILE DRAWER (Fidelity Dashboard) -->
+    <div id="loyalty-drawer" class="fixed inset-0 z-50 overflow-hidden hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute inset-0 bg-darklux/50 backdrop-blur-sm transition-opacity" onclick="toggleLoyaltyDrawer()"></div>
+
+            <div class="pointer-events-none fixed inset-y-0 left-0 flex max-w-full pr-10">
+                <div class="pointer-events-auto w-screen max-w-md">
+                    <div class="flex h-full flex-col overflow-y-scroll bg-white shadow-2xl">
+                        <!-- Drawer Header -->
+                        <div class="flex items-center justify-between px-6 py-6 border-b border-nevoa/40 bg-perola">
+                            <h2 class="font-serif text-xl font-bold text-darklux">O Meu Clube Fidelidade</h2>
+                            <button onclick="toggleLoyaltyDrawer()" class="text-darklux hover:text-coral text-lg p-2 font-mono">&times;</button>
+                        </div>
+
+                        <!-- Panel Content -->
+                        <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+                            <!-- Quick Point Balance Widget -->
+                            <div class="bg-gradient-to-r from-coral/10 to-dourado/10 p-6 rounded-2xl border border-dourado/20 text-center space-y-2">
+                                <span class="text-3xl">👑</span>
+                                <p class="text-[9px] uppercase tracking-[0.2em] font-bold text-darklux/50">O Seu Saldo de Pontos</p>
+                                <p class="text-4xl font-serif font-bold text-darklux"><span id="loyalty-drawer-points">1250</span> <span class="text-sm font-sans font-normal text-dourado-dark">pts</span></p>
+                                <p class="text-[10px] text-darklux/60 leading-relaxed">Já tem acumulado o equivalente a <strong class="text-coral">12.50€</strong> para descontar!</p>
+                            </div>
+
+                            <!-- Reward Redemption Options -->
+                            <div class="space-y-4">
+                                <h3 class="font-serif text-sm font-bold uppercase tracking-wider text-darklux">Recompensas Disponíveis</h3>
+                                <div class="space-y-3">
+                                    <!-- Reward Item 1 -->
+                                    <div class="border border-nevoa/30 p-4 rounded-xl flex items-center justify-between">
+                                        <div>
+                                            <h4 class="text-xs font-bold text-darklux">Desconto de 10€ no Carrinho</h4>
+                                            <p class="text-[10px] text-darklux/50">Requer 1000 pontos</p>
+                                        </div>
+                                        <button onclick="redeemPoints(1000, 10)" class="bg-dourado text-white text-[9px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">Resgatar</button>
+                                    </div>
+                                    <!-- Reward Item 2 -->
+                                    <div class="border border-nevoa/30 p-4 rounded-xl flex items-center justify-between">
+                                        <div>
+                                            <h4 class="text-xs font-bold text-darklux">Oferta de Vela Aromática Coral Celeste</h4>
+                                            <p class="text-[10px] text-darklux/50">Requer 2000 pontos</p>
+                                        </div>
+                                        <button onclick="redeemPoints(2000, 'Vela')" class="bg-dourado text-white text-[9px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">Resgatar</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Refer a Friend Widget -->
+                            <div class="bg-perola p-6 rounded-2xl border border-nevoa/30 space-y-4">
+                                <h3 class="font-serif text-sm font-bold text-darklux">Recomende e Ganhe Pontos!</h3>
+                                <p class="text-xs text-darklux/70 leading-relaxed font-light">Partilhe o seu link exclusivo com as suas amigas e familiares. Ao completarem a primeira compra, ambos ganham **500 pontos** de bónus!</p>
+                                <div class="flex gap-2">
+                                    <input type="text" readonly value="https://coralceleste.pt/ref=silviasantos" class="bg-white border border-nevoa rounded-xl px-4 py-3 text-xs w-full text-darklux/70 focus:outline-none">
+                                    <button onclick="showToast('Link de recomendação copiado! Envie às suas amigas.')" class="bg-coral text-white text-[10px] font-bold uppercase px-3 py-2 rounded-xl">Copiar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI CONSULTATION FLOATING CHATBOT WIDGET -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <!-- Floating Toggle Button -->
+        <button onclick="openChatBot()" class="w-14 h-14 bg-coral text-white rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-105 active:scale-95 text-2xl relative" aria-label="Abrir Consultoria Capilar">
+            💬
+            <span class="absolute top-0 right-0 bg-celeste text-[9px] text-darklux font-extrabold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white animate-bounce">AI</span>
+        </button>
+
+        <!-- Chat Window Frame -->
+        <div id="chatbot-frame" class="fixed bottom-24 right-6 w-[350px] sm:w-[380px] h-[520px] bg-white rounded-3xl shadow-2xl border border-nevoa/40 flex-col overflow-hidden hidden">
+            <!-- Header -->
+            <div class="bg-darklux text-white p-4 flex items-center justify-between border-b border-white/5">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-coral animate-ping"></span>
+                    <div>
+                        <h4 class="text-xs font-bold">Diana — Consultora Coral Celeste</h4>
+                        <p class="text-[9px] text-celeste font-semibold">Análise & Diagnóstico Capilar</p>
+                    </div>
+                </div>
+                <button onclick="closeChatBot()" class="text-white hover:text-coral text-lg p-1">&times;</button>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-perola text-xs">
+                <!-- Initial bot message -->
+                <div class="flex gap-2 items-start">
+                    <span class="text-xl">👩‍⚕️</span>
+                    <div class="bg-white p-3.5 rounded-2xl border border-nevoa/30 shadow-sm max-w-[80%] leading-relaxed">
+                        Olá! Sou a Diana, especialista em dermatologia capilar e tricologia da Coral Celeste. Vamos fazer um diagnóstico capilar rápido de 4 perguntas para encontrar o seu ritual ideal?
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pre-defined Quick Answer Options / Input bar -->
+            <div class="bg-white p-4 border-t border-nevoa/30" id="chat-input-area">
+                <p id="chat-input-title" class="text-[9px] text-darklux/50 uppercase font-bold tracking-wider mb-2">Pergunta 1: Como é a textura do seu cabelo?</p>
+                <div class="grid grid-cols-1 gap-2" id="chat-options-container">
+                    <!-- Options are injected dynamically by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIMULATED SECURE CHECKOUT MODAL -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-darklux/60 backdrop-blur-md hidden">
+        <div class="bg-perola rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-dourado/20 shadow-2xl p-6 sm:p-10 relative">
+            <button onclick="closeCheckoutModal()" class="absolute top-6 right-6 text-darklux hover:text-coral text-2xl font-mono p-2">&times;</button>
+            
+            <div id="checkout-form-step">
+                <span class="text-[10px] tracking-[0.25em] font-bold text-coral uppercase block mb-2">Checkout Encriptado e Seguro</span>
+                <h2 class="font-serif text-2xl sm:text-3xl text-darklux mb-6">Finalizar a Encomenda</h2>
+                
+                <form onsubmit="handleCheckout(event)" class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] uppercase tracking-wider font-bold text-darklux/60">Nome Completo</label>
+                            <input type="text" placeholder="Como no documento..." class="w-full bg-white border border-nevoa rounded-xl px-4 py-3 text-xs focus:outline-none" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] uppercase tracking-wider font-bold text-darklux/60">Telemóvel</label>
+                            <input type="tel" placeholder="912 345 678" class="w-full bg-white border border-nevoa rounded-xl px-4 py-3 text-xs focus:outline-none" required>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-[10px] uppercase tracking-wider font-bold text-darklux/60">E-mail para Confirmação</label>
+                        <input type="email" placeholder="seu-email@provedor.com" class="w-full bg-white border border-nevoa rounded-xl px-4 py-3 text-xs focus:outline-none" required>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="sm:col-span-2 space-y-1">
+                            <label class="text-[10px] uppercase tracking-wider font-bold text-darklux/60">Morada de Entrega</label>
+                            <input type="text" placeholder="Rua, Número, Piso..." class="w-full bg-white border border-nevoa rounded-xl px-4 py-3 text-xs focus:outline-none" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] uppercase tracking-wider font-bold text-darklux/60">Código Postal</label>
+                            <input type="text" placeholder="1000-000" class="w-full bg-white border border-nevoa rounded-xl px-4 py-3 text-xs focus:outline-none" required>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border border-dourado/30 space-y-4">
+                        <span class="text-[9px] tracking-widest font-bold text-dourado-dark uppercase">Método de Pagamento</span>
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="border-2 border-coral rounded-xl p-3 flex items-center gap-2 cursor-pointer bg-coral/5">
+                                <input type="radio" name="payment" checked class="accent-coral">
+                                <span class="text-xs font-semibold text-darklux">⚡ Multibanco / MB Way</span>
+                            </label>
+                            <label class="border border-nevoa rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:border-coral">
+                                <input type="radio" name="payment" class="accent-coral">
+                                <span class="text-xs font-semibold text-darklux">💳 Cartão de Crédito</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-nevoa/40 flex items-center justify-between text-xs">
+                        <span class="font-bold text-darklux">Total a pagar:</span>
+                        <span id="checkout-total-val" class="font-serif text-xl font-bold text-coral">0.00€</span>
+                    </div>
+
+                    <button type="submit" class="w-full bg-coral hover:bg-coral-dark text-white text-xs font-bold tracking-widest uppercase py-4 rounded-full shadow-lg">
+                        Confirmar e Pagar Encomenda
+                    </button>
+                </form>
+            </div>
+
+            <div id="checkout-success-step" class="hidden text-center space-y-6 py-8">
+                <span class="text-6xl animate-bounce inline-block">✨</span>
+                <h3 class="font-serif text-3xl text-darklux">Encomenda Confirmada!</h3>
+                <p class="text-xs text-darklux/70 max-w-md mx-auto leading-relaxed">
+                    Sua jornada de cuidado capilar de luxo começou. Enviamos todos os detalhes da sua fatura e o código de MBWAY/Referência Multibanco para o seu endereço de e-mail.
+                </p>
+                <div class="w-20 h-[1px] bg-dourado mx-auto"></div>
+                <button onclick="closeCheckoutModal()" class="bg-coral text-white text-xs font-bold tracking-widest uppercase px-8 py-4 rounded-full">
+                    Voltar à Loja
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST POPUP FOR SEAMLESS FEEDBACK -->
+    <div id="toast" class="fixed bottom-6 left-6 z-50 bg-darklux text-perola text-xs font-medium tracking-wide px-6 py-4 rounded-2xl shadow-2xl border border-dourado/20 translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3">
+        <span class="text-coral">✦</span>
+        <span id="toast-message">Adicionado com sucesso!</span>
+    </div>
+
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // State variables
+        let cart = [];
+        let points = 1250;
+        let isCouponApplied = false;
+
+        // Display welcome popup shortly after load
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('welcome-popup').classList.remove('hidden');
+            }, 1000);
+            initDiagnosticsChat(); // Init Diagnostic Quiz Flow
+        });
+
+        function closeWelcomePopup() {
+            document.getElementById('welcome-popup').classList.add('hidden');
+        }
+
+        function copyCouponCode() {
+            const coupon = document.getElementById('coupon-code').innerText;
+            
+            // Clipboard Copy Fallback mechanism
+            const el = document.createElement('textarea');
+            el.value = coupon;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            showToast("Cupão copiado para a área de transferência!");
+        }
+
+        function applyWelcomeCouponAndClose() {
+            isCouponApplied = true;
+            updateCartUI();
+            closeWelcomePopup();
+            showToast("Cupão de 10% aplicado com sucesso!");
+        }
+
+        // Drawer Controls
+        function toggleCart() {
+            document.getElementById('cart-drawer').classList.toggle('hidden');
+        }
+
+        function toggleLoyaltyDrawer() {
+            document.getElementById('loyalty-drawer').classList.toggle('hidden');
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        // Filter Products in Catalog
+        function filterCatalog(brand) {
+            // Update active state in filters UI
+            const filterButtons = document.querySelectorAll('#store-filters button');
+            filterButtons.forEach(btn => {
+                btn.classList.remove('bg-darklux', 'text-white');
+                btn.classList.add('border-nevoa', 'text-darklux', 'bg-white');
+            });
+
+            // Set active button styles
+            const activeBtn = event.currentTarget;
+            activeBtn.classList.add('bg-darklux', 'text-white');
+            activeBtn.classList.remove('border-nevoa', 'text-darklux', 'bg-white');
+
+            // Show or hide product cards
+            const productCards = document.querySelectorAll('#product-grid .product-card');
+            productCards.forEach(card => {
+                const cardBrand = card.getAttribute('data-brand');
+                if (brand === 'todos' || cardBrand === brand) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // Cart Actions
+        function addToCart(name, price, icon) {
+            const existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ name, price, icon, quantity: 1 });
+            }
+            updateCartUI();
+            showToast(`"${name}" adicionado ao seu ritual!`);
+        }
+
+        function updateQuantity(name, amount) {
+            const item = cart.find(item => item.name === name);
+            if (item) {
+                item.quantity += amount;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(it => it.name !== name);
+                }
+            }
+            updateCartUI();
+        }
+
+        function removeFromCart(name) {
+            cart = cart.filter(item => item.name !== name);
+            updateCartUI();
+        }
+
+        // Dynamic Calculations for E-commerce Rules
+        function updateCartUI() {
+            const emptyState = document.getElementById('cart-empty-state');
+            const itemsContainer = document.getElementById('cart-items');
+            const footer = document.getElementById('cart-footer');
+            const countBadge = document.getElementById('cart-count');
+            
+            const subtotalText = document.getElementById('cart-subtotal');
+            const discountRow = document.getElementById('progressive-discount-row');
+            const discountVal = document.getElementById('progressive-discount-val');
+            const couponRow = document.getElementById('coupon-discount-row');
+            const couponVal = document.getElementById('coupon-discount-val');
+            const totalText = document.getElementById('cart-total');
+
+            const progressBar = document.getElementById('cart-progress-bar');
+            const progressText = document.getElementById('progress-text-target');
+
+            let totalItems = 0;
+            let subtotal = 0;
+
+            if (cart.length === 0) {
+                emptyState.classList.remove('hidden');
+                itemsContainer.classList.add('hidden');
+                footer.classList.add('hidden');
+                countBadge.classList.add('scale-0');
+                countBadge.classList.remove('scale-100');
+                progressBar.style.width = '0%';
+                progressText.innerHTML = "Faltam 50.00€ para ter Portes Grátis + Brindes!";
+            } else {
+                emptyState.classList.add('hidden');
+                itemsContainer.classList.remove('hidden');
+                footer.classList.remove('hidden');
+                countBadge.classList.remove('scale-0');
+                countBadge.classList.add('scale-100');
+
+                itemsContainer.innerHTML = '';
+                cart.forEach(item => {
+                    totalItems += item.quantity;
+                    subtotal += (item.price * item.quantity);
+
+                    itemsContainer.innerHTML += `
+                        <div class="flex items-center justify-between p-4 bg-perola rounded-2xl border border-nevoa/30">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">${item.icon}</span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-darklux">${item.name}</h4>
+                                    <span class="text-[10px] text-coral font-bold">${item.price.toFixed(2)}€</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center bg-white border border-nevoa/60 rounded-full px-2 py-1">
+                                    <button onclick="updateQuantity('${item.name}', -1)" class="text-darklux hover:text-coral px-1.5 font-bold text-xs">-</button>
+                                    <span class="text-xs font-bold text-darklux px-1">${item.quantity}</span>
+                                    <button onclick="updateQuantity('${item.name}', 1)" class="text-darklux hover:text-coral px-1.5 font-bold text-xs">+</button>
+                                </div>
+                                <button onclick="removeFromCart('${item.name}')" class="text-darklux hover:text-coral font-bold text-xs p-1">&times;</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Progressive Gifts and Delivery Progress calculation
+                let progressPercent = (subtotal / 50) * 100;
+                progressBar.style.width = `${Math.min(progressPercent, 100)}%`;
+
+                if (subtotal < 50) {
+                    const diff = (50 - subtotal).toFixed(2);
+                    progressText.innerHTML = `Faltam <strong class="text-coral">${diff}€</strong> para desbloquear Portes Grátis + Brinde!`;
+                } else {
+                    progressText.innerHTML = `🎉 <strong class="text-celeste-dark">Portes Grátis & Brinde Especial Desbloqueados!</strong>`;
+                }
+
+                // Progressive discounts logic
+                let progressiveDiscount = 0;
+                if (subtotal >= 120) {
+                    progressiveDiscount = subtotal * 0.10; // 10%
+                    discountRow.classList.remove('hidden');
+                    discountVal.innerText = `-${progressiveDiscount.toFixed(2)}€ (10%)`;
+                } else if (subtotal >= 75) {
+                    progressiveDiscount = subtotal * 0.05; // 5%
+                    discountRow.classList.remove('hidden');
+                    discountVal.innerText = `-${progressiveDiscount.toFixed(2)}€ (5%)`;
+                } else {
+                    discountRow.classList.add('hidden');
+                }
+
+                // Coupon calculations
+                let couponDiscount = 0;
+                if (isCouponApplied) {
+                    couponDiscount = (subtotal - progressiveDiscount) * 0.10;
+                    couponRow.classList.remove('hidden');
+                    couponVal.innerText = `-${couponDiscount.toFixed(2)}€ (10%)`;
+                } else {
+                    couponRow.classList.add('hidden');
+                }
+
+                const finalTotal = subtotal - progressiveDiscount - couponDiscount;
+                subtotalText.innerText = `${subtotal.toFixed(2)}€`;
+                totalText.innerText = `${finalTotal.toFixed(2)}€`;
+                document.getElementById('checkout-total-val').innerText = `${finalTotal.toFixed(2)}€`;
+            }
+
+            countBadge.innerText = totalItems;
+        }
+
+        // Loyalty points redemption
+        function redeemPoints(amount, reward) {
+            if (points >= amount) {
+                points -= amount;
+                updateLoyaltyUI();
+                showToast(`Recompensa resgatada com sucesso: ${reward}!`);
+            } else {
+                showToast("Pontos insuficientes para esta recompensa.");
+            }
+        }
+
+        function updateLoyaltyUI() {
+            document.getElementById('demo-points').innerText = points.toLocaleString();
+            document.getElementById('loyalty-drawer-points').innerText = points.toLocaleString();
+        }
+
+        // Checkout simulated procedures
+        function openCheckoutModal() {
+            toggleCart();
+            document.getElementById('checkout-modal').classList.remove('hidden');
+            document.getElementById('checkout-form-step').classList.remove('hidden');
+            document.getElementById('checkout-success-step').classList.add('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        // Checkout finish handling
+        function handleCheckout(event) {
+            event.preventDefault();
+            document.getElementById('checkout-form-step').classList.add('hidden');
+            document.getElementById('checkout-success-step').classList.remove('hidden');
+            
+            // Add points based on purchase subtotal (10 points per euro)
+            let totalSpent = parseFloat(document.getElementById('cart-subtotal').innerText);
+            points += Math.floor(totalSpent * 10);
+            updateLoyaltyUI();
+
+            cart = [];
+            updateCartUI();
+        }
+
+        // Interactive AI Chatbot Consultant Engine
+        function openChatBot() {
+            document.getElementById('chatbot-frame').classList.remove('hidden');
+            document.getElementById('chatbot-frame').classList.add('flex');
+        }
+
+        function closeChatBot() {
+            document.getElementById('chatbot-frame').classList.add('hidden');
+            document.getElementById('chatbot-frame').classList.remove('flex');
+        }
+
+        // Advanced Multi-Step Diagnostics Chat Logic
+        const diagnosticQuiz = [
+            {
+                question: "Como descreveria a textura do seu cabelo?",
+                options: [
+                    { text: "Fino e Sem Volume", value: "fino" },
+                    { text: "Grosso e Espesso", value: "grosso" },
+                    { text: "Ondulado ou Frisado", value: "ondulado" }
+                ]
+            },
+            {
+                question: "Qual é a sua faixa etária ou fase da vida atual?",
+                options: [
+                    { text: "Menor de 25 anos (Foco em prevenção)", value: "jovem" },
+                    { text: "Entre 25 e 45 anos (Fase Ativa / Stress)", value: "ativa" },
+                    { text: "45 anos ou mais (Fase Menopausa)", value: "madura" },
+                    { text: "Grávida ou Pós-Parto recente", value: "maternidade" }
+                ]
+            },
+            {
+                question: "Quantas vezes costuma lavar o seu cabelo por semana?",
+                options: [
+                    { text: "Todos os dias (Lavagem Diária)", value: "diaria" },
+                    { text: "De 2 a 3 vezes por semana", value: "moderada" },
+                    { text: "Apenas 1 vez ou menos por semana", value: "baixa" }
+                ]
+            },
+            {
+                question: "O seu cabelo possui algum tipo de procedimento químico?",
+                options: [
+                    { text: "Completamente Natural", value: "natural" },
+                    { text: "Pintado ou Descolorado", value: "colorido" },
+                    { text: "Alisamento Químico / Progressiva", value: "alisado" }
+                ]
+            }
+        ];
+
+        let currentQuizStep = 0;
+        let userResponses = {};
+
+        function initDiagnosticsChat() {
+            currentQuizStep = 0;
+            userResponses = {};
+            renderQuizStep();
+        }
+
+        function renderQuizStep() {
+            const inputTitle = document.getElementById('chat-input-title');
+            const optionsContainer = document.getElementById('chat-options-container');
+            
+            if (currentQuizStep < diagnosticQuiz.length) {
+                const currentStepData = diagnosticQuiz[currentQuizStep];
+                inputTitle.innerText = `Pergunta ${currentQuizStep + 1}: ${currentStepData.question}`;
+                
+                optionsContainer.innerHTML = '';
+                currentStepData.options.forEach(opt => {
+                    optionsContainer.innerHTML += `
+                        <button onclick="handleQuizAnswer('${opt.text}', '${opt.value}')" class="w-full p-2.5 bg-perola border border-nevoa rounded-xl hover:border-coral hover:bg-coral/5 transition-all text-xs text-left font-medium">
+                            ${opt.text}
+                        </button>
+                    `;
+                });
+            } else {
+                // Final recommendation step
+                processDiagnosticRecommendation();
+            }
+        }
+
+        function handleQuizAnswer(labelText, selectedValue) {
+            const messagesArea = document.getElementById('chat-messages');
+            
+            // Log user answer in message log
+            messagesArea.innerHTML += `
+                <div class="flex gap-2 items-start justify-end">
+                    <div class="bg-coral text-white p-3 py-2 rounded-2xl shadow-sm max-w-[85%] text-right font-medium">
+                        ${labelText}
+                    </div>
+                    <span class="text-xl">👩</span>
+                </div>
+            `;
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+
+            // Save choice
+            userResponses[currentQuizStep] = selectedValue;
+            currentQuizStep++;
+
+            // Wait a brief moment and display next step
+            setTimeout(() => {
+                if (currentQuizStep < diagnosticQuiz.length) {
+                    messagesArea.innerHTML += `
+                        <div class="flex gap-2 items-start">
+                            <span class="text-xl">👩‍⚕️</span>
+                            <div class="bg-white p-3 rounded-2xl border border-nevoa/30 shadow-sm max-w-[85%] leading-relaxed">
+                                Excelente. Vamos à pergunta seguinte...
+                            </div>
+                        </div>
+                    `;
+                    messagesArea.scrollTop = messagesArea.scrollHeight;
+                }
+                renderQuizStep();
+            }, 600);
+        }
+
+        function processDiagnosticRecommendation() {
+            const messagesArea = document.getElementById('chat-messages');
+            const inputTitle = document.getElementById('chat-input-title');
+            const optionsContainer = document.getElementById('chat-options-container');
+
+            inputTitle.innerText = "Diagnóstico Concluído!";
+            optionsContainer.innerHTML = `
+                <button onclick="resetDiagnosticsChat()" class="w-full text-center py-3 bg-darklux text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-coral transition-colors">
+                    Refazer Diagnóstico Capilar
+                </button>
+            `;
+
+            // Core Logic for Custom Recommendations based on user matrix
+            let recommendedProduct = {
+                name: "Coral C — Exfoliante Líquido",
+                price: 35.00,
+                icon: "🧪",
+                reason: "Como lava o cabelo com frequência ou tem tendência a acumulação, a nossa loção de Ácido Salicílico irá garantir que o seu couro cabeludo respira livre de oleosidade e resíduos. Recomendo também a nossa Toalha de Microfibra Coral para acelerar a secagem com suavidade!"
+            };
+
+            // Alternate rules based on answers
+            if (userResponses[0] === 'grosso' || userResponses[3] === 'colorido') {
+                recommendedProduct = {
+                    name: "Haskell Cavalo Forte Shampô",
+                    price: 18.50,
+                    icon: "🐴",
+                    reason: "Cabelos espessos ou com química necessitam de força e reposição estrutural. O Shampô Cavalo Forte da Haskell com Biotina é o seu aliado ideal de regeneração de luxo!"
+                };
+            } else if (userResponses[0] === 'ondulado') {
+                recommendedProduct = {
+                    name: "Mímare No-Frizz Shampô",
+                    price: 16.00,
+                    icon: "🥑",
+                    reason: "Para ondulações com frizz, a hidratação fluida e natural é o segredo. A fórmula com abacate orgânico de Mímare garante definição perfeita sem pesar nadinha!"
+                };
+            } else if (userResponses[1] === 'madura' || userResponses[1] === 'maternidade') {
+                recommendedProduct = {
+                    name: "Exfoliante de Pó de Pérola",
+                    price: 38.00,
+                    icon: "🦪",
+                    reason: "Transições hormonais ou fases de pós-parto requerem uma ativação nutritiva direta na raiz. O nosso esfoliante de Pó de Pérola Coral C oferece remineralização imediata."
+                };
+            }
+
+            // Display loading state
+            messagesArea.innerHTML += `
+                <div class="flex gap-2 items-start" id="chatbot-loading">
+                    <span class="text-xl">👩‍⚕️</span>
+                    <div class="bg-white p-3 rounded-2xl border border-nevoa/30 shadow-sm max-w-[85%] leading-relaxed flex items-center gap-2">
+                        <span class="w-2 h-2 bg-coral rounded-full animate-bounce"></span>
+                        <span class="w-2 h-2 bg-coral rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                        <span class="w-2 h-2 bg-coral rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                        <span>Analisando o seu perfil capilar...</span>
+                    </div>
+                </div>
+            `;
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+
+            setTimeout(() => {
+                const loadingEl = document.getElementById('chatbot-loading');
+                if (loadingEl) loadingEl.remove();
+
+                // Append Final Recommendation
+                messagesArea.innerHTML += `
+                    <div class="flex gap-2 items-start">
+                        <span class="text-xl">👩‍⚕️</span>
+                        <div class="bg-white p-4 rounded-2xl border border-nevoa/30 shadow-md max-w-[90%] space-y-3 leading-relaxed">
+                            <p class="font-bold text-darklux">✨ O Seu Diagnóstico de Vênus está pronto!</p>
+                            <p class="text-[11px] text-darklux/80">
+                                ${recommendedProduct.reason}
+                            </p>
+                            <div class="p-3 bg-perola rounded-xl border border-dourado/20 flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-2xl">${recommendedProduct.icon}</span>
+                                    <div>
+                                        <h5 class="font-bold text-[11px] text-darklux">${recommendedProduct.name}</h5>
+                                        <span class="text-coral font-bold text-[10px]">${recommendedProduct.price.toFixed(2)}€</span>
+                                    </div>
+                                </div>
+                                <button onclick="addToCart('${recommendedProduct.name}', ${recommendedProduct.price}, '${recommendedProduct.icon}')" class="bg-coral text-white text-[9px] font-bold uppercase tracking-wider px-3 py-2 rounded-lg">
+                                    Adicionar
+                                </button>
+                            </div>
+                            <p class="text-[10px] text-dourado-dark font-semibold">🎁 Use o código <strong class="font-mono">DIANA10</strong> para mais 10% de desconto adicional na sua primeira compra!</p>
+                        </div>
+                    </div>
+                `;
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+                isCouponApplied = true; // Apply coupon dynamically to encourage conversion
+                updateCartUI();
+            }, 1200);
+        }
+
+        function resetDiagnosticsChat() {
+            const messagesArea = document.getElementById('chat-messages');
+            messagesArea.innerHTML = `
+                <div class="flex gap-2 items-start">
+                    <span class="text-xl">👩‍⚕️</span>
+                    <div class="bg-white p-3.5 rounded-2xl border border-nevoa/30 shadow-sm max-w-[80%] leading-relaxed">
+                        Reiniciando o seu diagnóstico! Vamos encontrar a fórmula ideal para o seu ritual capilar.
+                    </div>
+                </div>
+            `;
+            initDiagnosticsChat();
+        }
+
+        // Show generic feedback toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Handle Newsletter submission
+        function handleSubscribe(event) {
+            event.preventDefault();
+            const input = event.target.querySelector('input');
+            showToast('Sua subscrição de luxo foi registada!');
+            input.value = '';
+        }
+    </script>
 </body>
 </html>
